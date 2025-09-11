@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model user {
+  user_id             Int       @id @default(autoincrement())
+  nama                String    @db.VarChar(255)
+  nip                 String    @db.VarChar(50)
+  password            String    @db.VarChar(255)
+  email               String    @db.VarChar(255)
+  jabatan             String    @db.VarChar(100)
+  role                String    @db.VarChar(50)
+  usulan              usulan[]
+}
+
+model OPD {
+  opd_id              Int       @id @default(autoincrement())
+  nama_opd            String    @db.VarChar(255)
+}
+
+model usulan {
+  usulan_id           Int       @id @default(autoincrement())
+  user_id             Int
+  user                user      @relation(fields: [user_id], references: [user_id])
+  jenis_usulan        String    @db.VarChar(100)
+  tanggal_pengajuan   DateTime  @db.Date
+  status              String    @db.VarChar(50)
+  dokumenSyarat       dokumenSyarat[]
+  riwayatStatus       riwayatStatus[]
+}
+
+model dokumenSyarat {
+  dok_id              Int       @id @default(autoincrement())
+  usulan_id           Int
+  nama_file           String    @db.VarChar(255)
+  path_file           String    @db.VarChar(255)
+  status_verifikasi   String    @db.VarChar(50)
+  usulan              usulan    @relation(fields: [usulan_id], references: [usulan_id])
+}
+
+model riwayatStatus {
+  riwayat_id          Int       @id @default(autoincrement())
+  usulan_id           Int
+  status              String    @db.VarChar(50)
+  catatan             String    @db.VarChar(255)
+  tanggal_perubahan   DateTime  @db.Date
+  usulan              usulan    @relation(fields: [usulan_id], references: [usulan_id])
+}
