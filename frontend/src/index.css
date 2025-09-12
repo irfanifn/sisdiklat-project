@@ -1,68 +1,94 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+/* Importing Google Fonts - Montserrat */
+@import url("https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+@import "tailwindcss";
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+/* Custom CSS Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Montserrat", sans-serif;
 }
 
 body {
-  margin: 0;
   display: flex;
-  place-items: center;
-  min-width: 320px;
+  align-items: center;
+  justify-content: center;
   min-height: 100vh;
+  background-color: #f7f6bb;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+input {
+  border: 1px solid #686868;
+  border-radius: 10px;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+#root {
+  width: 100%;
+  padding: 0 0.6rem;
+}
+
+.login-container {
+  max-width: 410px;
+  margin: 0 auto;
+  border-radius: 0.5rem;
+  padding: 2rem 1.5rem;
+  background-color: #ffffff;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.login-container .form-title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 1.8rem;
+}
+
+.login-form .input-wrapper {
+  height: 54px;
+  width: 100%;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.login-form .input-wrapper .input-field {
+  height: 100%;
+  width: 100%;
+  border-radius: 1px solid #bfb3f2;
+  padding: 0 1.25rem 0 3.12rem;
+  transition: 0.2s ease;
+}
+
+.login-form .input-wrapper .input-field:focus {
+  border-color: #e0c52d;
+}
+
+.login-form .input-wrapper .input-field::placeholder {
+  color: #e0c52d;
+}
+
+.login-form .input-wrapper span {
+  color: #413702;
+  position: absolute;
+  top: 50%;
+  left: 0.9rem;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.login-form .login-button {
+  width: 100%;
+  height: 50px;
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: none;
+  font-size: 1.125rem;
+  color: #ffffff;
+  font-weight: 500;
+  border-radius: 0.3rem;
+  background: #3e5f1b;
+  transition: 0.2s ease;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.login-form .login-button:hover {
+  background: #2e3e13;
 }
