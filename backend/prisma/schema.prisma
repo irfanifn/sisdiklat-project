@@ -21,13 +21,10 @@ model user {
   email               String    @db.VarChar(255)
   jabatan             String    @db.VarChar(100)
   role                String    @db.VarChar(50)
+  nama_opd            String    @db.VarChar(255)
   usulan              usulan[]
 }
 
-model OPD {
-  opd_id              Int       @id @default(autoincrement())
-  nama_opd            String    @db.VarChar(255)
-}
 
 model usulan {
   usulan_id           Int       @id @default(autoincrement())
