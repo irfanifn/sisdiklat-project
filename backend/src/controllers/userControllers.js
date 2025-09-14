@@ -13,7 +13,16 @@ const loginUser = async (req, res) => {
     }
 
     const user = await prisma.user.findUnique({
-      where: { nip },
+      where: { nip: parseInt(nip) },
+      select: {
+        user_id: true,
+        nama: true,
+        nip: true,
+        email: true,
+        jabatan: true,
+        role: true,
+        nama_opd: true,
+      },
     });
 
     if (!user) {
@@ -24,7 +33,20 @@ const loginUser = async (req, res) => {
     }
 
     const token = createToken(user.id);
-    res.json({ success: true, message: "Login successful", token });
+    res.json({
+      success: true,
+      message: "Login successful",
+      token,
+      user: {
+        id: user.user_id,
+        nama: user.nama,
+        nip: user.nip,
+        email: user.email,
+        jabatan: user.jabatan,
+        role: user.role,
+        nama_opd: user.nama_opd,
+      },
+    });
   } catch (error) {
     console.log(error);
     res.json({ success: false, message: error.message });
