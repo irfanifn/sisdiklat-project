@@ -12,6 +12,14 @@ const loginUser = async (req, res) => {
       return res.json({ message: "Email and NIP are required" });
     }
 
+    if (!validator.isEmail(email)) {
+      return res.json({ message: "Invalid email format" });
+    }
+
+    if (nip.length != 18) {
+      return res.json({ message: "NIP must be 18 characters long" });
+    }
+
     const user = await prisma.user.findUnique({ nip });
 
     if (!user) {
