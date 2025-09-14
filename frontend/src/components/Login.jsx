@@ -7,16 +7,6 @@ function Login() {
       <form action="#" className="login-form">
         <div className="input-wrapper">
           <input
-            type="mail"
-            placeholder="Email"
-            className="input-field"
-            required
-          />
-          <span class="material-symbols-rounded">mail</span>
-        </div>
-
-        <div className="input-wrapper">
-          <input
             type="number"
             placeholder="NIP"
             className="input-field"
