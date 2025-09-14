@@ -16,8 +16,7 @@ datasource db {
 model user {
   user_id             Int       @id @default(autoincrement())
   nama                String    @db.VarChar(255)
-  nip                 String    @db.VarChar(50)
-  password            String    @db.VarChar(255)
+  nip                 Int       @unique
   email               String    @db.VarChar(255)
   jabatan             String    @db.VarChar(100)
   role                String    @db.VarChar(50)
