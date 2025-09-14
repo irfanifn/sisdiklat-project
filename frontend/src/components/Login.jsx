@@ -8,7 +8,7 @@ function Login() {
         <div className="input-wrapper">
           <input
             type="number"
-            placeholder="NIP"
+            placeholder="Nomor Induk Pegawai (NIP)"
             className="input-field"
             required
           />
