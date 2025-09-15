@@ -52,27 +52,45 @@ function Login() {
   };
 
   return (
-    <div className="login-container">
-      <h1 className="form-title">Login</h1>
-      <form onSubmit={handleSubmit} className="login-form">
-        {error && <div className="error-message">{error}</div>}
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-blue-300">
+      <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl">
+        <h1 className="text-3xl font-bold text-center text-blue-700 mb-8">
+          Login
+        </h1>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {error && (
+            <div className="bg-red-100 text-red-700 px-4 py-2 rounded mb-4 text-center text-sm">
+              {error}
+            </div>
+          )}
 
-        <div className="input-wrapper">
-          <input
-            type="number"
-            placeholder="Nomor Induk Pegawai (NIP)"
-            className="input-field"
-            value={nip}
-            onChange={(e) => setNip(e.target.value)}
-            required
-          />
-          <span className="material-symbols-rounded">numbers</span>
-        </div>
+          <div className="relative">
+            <input
+              type="number"
+              placeholder="Nomor Induk Pegawai (NIP)"
+              className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+              value={nip}
+              onChange={(e) => setNip(e.target.value)}
+              required
+            />
+            <span className="material-symbols-rounded absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-2xl">
+              dialpad
+            </span>
+          </div>
 
-        <button type="submit" className="login-button" disabled={loading}>
-          {loading ? "Loading..." : "Log In"}
-        </button>
-      </form>
+          <button
+            type="submit"
+            className={`w-full py-3 rounded-lg font-semibold text-white transition ${
+              loading
+                ? "bg-blue-300 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700"
+            }`}
+            disabled={loading}
+          >
+            {loading ? "Loading..." : "Log In"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

@@ -3,7 +3,7 @@
 @import "tailwindcss";
 
 /* Custom CSS Styles */
-* {
+/* * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -64,7 +64,7 @@ input {
 }
 
 .login-form .input-wrapper .input-field::placeholder {
-  color: #e0c52d;
+  color: #3e5f1b;
 }
 
 .login-form .input-wrapper span {
@@ -91,4 +91,4 @@ input {
 
 .login-form .login-button:hover {
   background: #2e3e13;
-}
+} */
