@@ -1,7 +1,22 @@
 import React from "react";
 import { Menu } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 function Header() {
+  const location = useLocation();
+
+  const getTitle = () => {
+    switch (location.pathname) {
+      case "/pegawai/dashboard":
+        return "Dashboard";
+      case "/profile":
+        return "Profile";
+      case "/pegawai/usulan":
+        return "Usulan";
+      default:
+        return "Status";
+    }
+  };
   return (
     <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-700/50 px-6 py-4">
       <div className="flex items-center justify-between">
@@ -12,7 +27,7 @@ function Header() {
           </button>
           <div className="hidden md:block">
             <h1 className="text-2xl font-black text-slate-800 dark:text-white">
-              Dashboard
+              {getTitle()}
             </h1>
             <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
               Welcome, Irfan!

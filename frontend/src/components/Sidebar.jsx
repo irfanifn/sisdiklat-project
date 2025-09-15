@@ -51,7 +51,7 @@ function Sidebar() {
 
           <li>
             <NavLink
-              to="/pegawai/profile"
+              to="/profile"
               className={({ isActive }) =>
                 `flex w-full items-center px-3 py-2 text-left text-slate-700 dark:text-slate-200 rounded-lg transition ${
                   isActive
@@ -67,7 +67,7 @@ function Sidebar() {
 
           <li>
             <NavLink
-              to="/usulan"
+              to="/pegawai/usulan"
               className={({ isActive }) =>
                 `flex w-full items-center px-3 py-2 text-left text-slate-700 dark:text-slate-200 rounded-lg transition ${
                   isActive
@@ -83,7 +83,7 @@ function Sidebar() {
 
           <li>
             <NavLink
-              to="/status"
+              to="/pegawai/status"
               className={({ isActive }) =>
                 `flex w-full items-center px-3 py-2 text-left text-slate-700 dark:text-slate-200 rounded-lg transition ${
                   isActive
