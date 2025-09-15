@@ -51,9 +51,9 @@ function Sidebar() {
 
           <li>
             <NavLink
-              to="/profile"
+              to="/pegawai/profile"
               className={({ isActive }) =>
-                `flex items-center px-3 py-2 rounded-lg transition ${
+                `flex w-full items-center px-3 py-2 text-left text-slate-700 dark:text-slate-200 rounded-lg transition ${
                   isActive
                     ? "bg-blue-200 dark:bg-blue-900"
                     : "hover:bg-blue-100 dark:hover:bg-slate-800"
@@ -69,7 +69,7 @@ function Sidebar() {
             <NavLink
               to="/usulan"
               className={({ isActive }) =>
-                `flex items-center px-3 py-2 rounded-lg transition ${
+                `flex w-full items-center px-3 py-2 text-left text-slate-700 dark:text-slate-200 rounded-lg transition ${
                   isActive
                     ? "bg-blue-200 dark:bg-blue-900"
                     : "hover:bg-blue-100 dark:hover:bg-slate-800"
@@ -85,7 +85,7 @@ function Sidebar() {
             <NavLink
               to="/status"
               className={({ isActive }) =>
-                `flex items-center px-3 py-2 rounded-lg transition ${
+                `flex w-full items-center px-3 py-2 text-left text-slate-700 dark:text-slate-200 rounded-lg transition ${
                   isActive
                     ? "bg-blue-200 dark:bg-blue-900"
                     : "hover:bg-blue-100 dark:hover:bg-slate-800"
