@@ -12,7 +12,7 @@ const App = () => {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
-      <Route path="/profile" element={<UserProfile />} />
+      <Route path="/profile/:user_id" element={<UserProfile />} />
       <Route path="/pegawai/dashboard" element={<PegawaiDashboard />} />
       <Route path="/pegawai/usulan" element={<PegawaiUsulan />} />
       <Route path="/pegawai/status" element={<PegawaiStatus />} />

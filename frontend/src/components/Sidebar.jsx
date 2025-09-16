@@ -4,6 +4,7 @@ import { Zap } from "lucide-react";
 
 function Sidebar() {
   const [currentPage, setCurrentPage] = useState("Dashboard");
+  const user = JSON.parse(localStorage.getItem("user"));
 
   return (
     <div
@@ -51,7 +52,7 @@ function Sidebar() {
 
           <li>
             <NavLink
-              to="/profile"
+              to={user ? `/profile/${user.id}` : "/login"}
               className={({ isActive }) =>
                 `flex w-full items-center px-3 py-2 text-left text-slate-700 dark:text-slate-200 rounded-lg transition ${
                   isActive
