@@ -27,10 +27,10 @@ function Profile() {
             <div className="max-w-7xl mx-auto bg-slate-900 rounded-xl shadow-md p-8">
               <div className="px-4 sm:px-0">
                 <h3 className="text-lg font-semibold text-white">
-                  Applicant Information
+                  Personal Information
                 </h3>
                 <p className="mt-1 text-sm text-gray-400">
-                  Personal details and application.
+                  Your personal details
                 </p>
               </div>
 
@@ -53,7 +53,7 @@ function Profile() {
                     }}
                   />
                 ) : (
-                  <dl className="divide-y divide-white/10">
+                  <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4 divide-y divide-white/10">
                     <div className="py-4 grid sm:grid-cols-3 sm:gap-4">
                       <dt className="text-sm font-medium text-gray-100">
                         Nama

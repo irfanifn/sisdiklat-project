@@ -9,12 +9,12 @@ function Header() {
     switch (location.pathname) {
       case "/pegawai/dashboard":
         return "Dashboard";
-      case "/profile":
-        return "Profile";
+      case "/pegawai/status":
+        return "Status";
       case "/pegawai/usulan":
         return "Usulan";
       default:
-        return "Status";
+        return "Profile";
     }
   };
   return (
