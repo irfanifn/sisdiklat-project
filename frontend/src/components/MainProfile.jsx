@@ -1,18 +1,34 @@
 import React, { useEffect, useState } from "react";
 import EditProfile from "./EditProfile";
+import axios from "axios";
+import { baseUrl } from "../configs/constant";
 
-function MainProfile() {
+function MainProfile({ user_id }) {
   const [editMode, setEditMode] = useState(false);
   const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    setUserData(user);
-  }, []);
+    // Fetch single user by id
+    const fetchUser = async () => {
+      try {
+        const res = await axios.get(`${baseUrl}/api/profile/${user_id}`);
+        setUserData(res.data);
+      } catch (error) {
+        setError("Failed to fetch user");
+        console.error("Error fetching user:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  if (!userData) {
-    return <div>Loading...</div>;
-  }
+    fetchUser();
+  }, [user_id]);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!userData) return <div>No user found</div>;
 
   return (
     <main className="flex-1 p-7">
