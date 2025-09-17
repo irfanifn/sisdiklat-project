@@ -10,7 +10,7 @@ function Header() {
       case "/pegawai/dashboard":
         return "Dashboard";
       case "/pegawai/status":
-        return "Status";
+        return "Riwayat Status";
       case "/pegawai/usulan":
         return "Usulan";
       default:

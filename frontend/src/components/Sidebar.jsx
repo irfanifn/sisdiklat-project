@@ -96,7 +96,7 @@ function Sidebar() {
               <span className="material-symbols-rounded mr-3">
                 check_circle
               </span>
-              Status
+              Riwayat Status
             </NavLink>
           </li>
         </ul>

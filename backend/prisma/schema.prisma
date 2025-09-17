@@ -31,7 +31,6 @@ model usulan {
   user                user      @relation(fields: [user_id], references: [user_id])
   jenis_usulan        String    @db.VarChar(100)
   tanggal_pengajuan   DateTime  @db.Date
-  status              String    @db.VarChar(50)
   dokumenSyarat       dokumenSyarat[]
   riwayatStatus       riwayatStatus[]
 }

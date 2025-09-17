@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
-import EditProfile from "../components/EditProfile";
 import MainProfile from "../components/MainProfile";
 
 function Profile() {
