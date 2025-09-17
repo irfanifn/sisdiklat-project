@@ -1,34 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import EditProfile from "./EditProfile";
-import axios from "axios";
-import { baseUrl } from "../configs/constant";
 
-function MainProfile({ user_id }) {
+function MainProfile() {
   const [editMode, setEditMode] = useState(false);
-  const [userData, setUserData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [user, loading] = useUser();
 
-  useEffect(() => {
-    // Fetch single user by id
-    const fetchUser = async () => {
-      try {
-        const res = await axios.get(`${baseUrl}/api/profile/${user_id}`);
-        setUserData(res.data);
-      } catch (error) {
-        setError("Failed to fetch user");
-        console.error("Error fetching user:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-    fetchUser();
-  }, [user_id]);
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-  if (!userData) return <div>No user found</div>;
+  if (!user) {
+    return <div>Silakan login untuk melihat profil</div>;
+  }
 
   return (
     <main className="flex-1 p-7">
@@ -52,7 +35,7 @@ function MainProfile({ user_id }) {
         <div className="mt-6 border-t border-white/10">
           {editMode ? (
             <EditProfile
-              userData={userData}
+              userData={user}
               onSave={(updatedData) => {
                 setUserData(updatedData);
                 setEditMode(false);
@@ -63,13 +46,13 @@ function MainProfile({ user_id }) {
               <div className="py-4 grid sm:grid-cols-3 sm:gap-4">
                 <dt className="text-sm font-medium text-gray-100">Nama</dt>
                 <dd className="mt-1 text-sm text-gray-400 sm:col-span-2 sm:mt-0">
-                  {userData.nama}
+                  {user.nama}
                 </dd>
               </div>
               <div className="py-4 grid sm:grid-cols-3 sm:gap-4">
                 <dt className="text-sm font-medium text-gray-100">NIP</dt>
                 <dd className="mt-1 text-sm text-gray-400 sm:col-span-2 sm:mt-0">
-                  {userData.nip}
+                  {user.nip}
                 </dd>
               </div>
               <div className="py-4 grid sm:grid-cols-3 sm:gap-4">
@@ -77,19 +60,19 @@ function MainProfile({ user_id }) {
                   Email address
                 </dt>
                 <dd className="mt-1 text-sm text-gray-400 sm:col-span-2 sm:mt-0">
-                  {userData.email}
+                  {user.email}
                 </dd>
               </div>
               <div className="py-4 grid sm:grid-cols-3 sm:gap-4">
                 <dt className="text-sm font-medium text-gray-100">Jabatan</dt>
                 <dd className="mt-1 text-sm text-gray-400 sm:col-span-2 sm:mt-0">
-                  {userData.jabatan}
+                  {user.jabatan}
                 </dd>
               </div>
               <div className="py-4 grid sm:grid-cols-3 sm:gap-4">
                 <dt className="text-sm font-medium text-gray-100">OPD</dt>
                 <dd className="mt-1 text-sm text-gray-400 sm:col-span-2 sm:mt-0">
-                  {userData.nama_opd}
+                  {user.nama_opd}
                 </dd>
               </div>
             </dl>
