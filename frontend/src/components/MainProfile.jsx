@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import EditProfile from "./EditProfile";
+import { useUser } from "../contexts/UserContext";
 
 function MainProfile() {
   const [editMode, setEditMode] = useState(false);

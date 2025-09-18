@@ -5,7 +5,6 @@ import { useUser } from "../contexts/UserContext";
 
 function Sidebar() {
   const [currentPage, setCurrentPage] = useState("Dashboard");
-  // const user = JSON.parse(localStorage.getItem("user"));
   const { user, loading } = useUser();
 
   if (loading) {
@@ -62,7 +61,6 @@ function Sidebar() {
 
           <li>
             <NavLink
-              // to={user ? `/profile/${user.id}` : "/login"}
               to="/profile"
               className={({ isActive }) =>
                 `flex w-full items-center px-3 py-2 text-left text-slate-700 dark:text-slate-200 rounded-lg transition ${

@@ -13,10 +13,21 @@ export const UserProvider = ({ children }) => {
   // Mengambil data user yang sedang login
   const fetchLoggedInUser = async () => {
     try {
-      const res = await axios.get(`${baseUrl}/api/profile`);
-      setUser(res.data);
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        setUser(null);
+        return;
+      }
+
+      const res = await axios.get(`${baseUrl}/api/profile`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setUser(res.data.data);
     } catch (err) {
-      console.error("Gagal mengambil data user:", err);
       setUser(null);
     } finally {
       setLoading(false);

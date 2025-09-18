@@ -15,7 +15,7 @@ function Login() {
     setLoading(true);
 
     try {
-      const response = await axios.post(`${baseUrl}/api/users/login`, {
+      const response = await axios.post(`${baseUrl}/api/login`, {
         nip: nip,
       });
 
