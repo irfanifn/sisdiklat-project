@@ -3,7 +3,7 @@ import EditProfile from "./EditProfile";
 
 function MainProfile() {
   const [editMode, setEditMode] = useState(false);
-  const [user, loading] = useUser();
+  const { user, loading } = useUser();
 
   if (loading) {
     return <div>Loading...</div>;

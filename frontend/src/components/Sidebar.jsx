@@ -6,7 +6,7 @@ import { useUser } from "../contexts/UserContext";
 function Sidebar() {
   const [currentPage, setCurrentPage] = useState("Dashboard");
   // const user = JSON.parse(localStorage.getItem("user"));
-  const [user, loading] = useUser();
+  const { user, loading } = useUser();
 
   if (loading) {
     return <div>Loading...</div>;
