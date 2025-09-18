@@ -1,30 +1,29 @@
 import { prisma } from "../configs/utils.js";
 
-const getUserById = async (req, res) => {
-  let { user_id } = req.params;
+const getUserProfile = async (req, res) => {
+  const user_id = req.user.user_id;
+
   try {
-    let userById = await prisma.user.findUnique({
+    const userProfile = await prisma.user.findUnique({
       where: { user_id: parseInt(user_id) },
     });
-    if (!userById) {
+
+    if (!userProfile) {
       return res.status(404).json({
-        messsage: "User not found",
+        message: "User not found",
         status: "Error",
       });
     }
-    res.status(200).json({
-      data: userById,
-      message: "Get user by id successfully",
-      status: "Success",
-    });
-    return;
-  } catch (error) {
+
+    // Hapus data sensitif sebelum mengirim respons
+    delete userProfile.nip;
+  } catch (err) {
     res.status(500).json({
       data: null,
-      message: error,
+      message: err.message,
       status: "Error",
     });
   }
 };
 
-export { getUserById };
+export { getUserProfile };

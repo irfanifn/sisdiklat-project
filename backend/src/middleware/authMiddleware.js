@@ -1,12 +1,12 @@
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
 
 const authMiddleware = (req, res, next) => {
   // Ambil token dari header
   const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split("")[1]; // Bearer token
+  const token = authHeader && authHeader.split(" ")[1]; // Bearer token
 
-  if ((token = null)) {
-    return res.sendStatus(404);
+  if (token === null) {
+    return res.sendStatus(401);
   }
 
   // Verifikasi token
@@ -19,4 +19,4 @@ const authMiddleware = (req, res, next) => {
   });
 };
 
-module.exports = authMiddleware;
+export default authMiddleware;
