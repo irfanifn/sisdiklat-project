@@ -34,7 +34,7 @@ function Sidebar() {
               E-TUBE
             </h1>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              Halaman Pegawai
+              Halaman {user.role}
             </p>
           </div>
         </div>
@@ -112,7 +112,7 @@ function Sidebar() {
       </nav>
 
       {/* Profile */}
-      <div className="p-4 border-t border-slate-200/50 dark:border-slate-700/50">
+      {/* <div className="p-4 border-t border-slate-200/50 dark:border-slate-700/50">
         <div className="flex items-center space-x-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50">
           <img
             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSGcgqpgCNw20mMHzdAYQLPHmp8Ze7BBDojEg&s"
@@ -130,7 +130,7 @@ function Sidebar() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

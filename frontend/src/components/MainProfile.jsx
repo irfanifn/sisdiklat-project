@@ -4,7 +4,7 @@ import { useUser } from "../contexts/UserContext";
 
 function MainProfile() {
   const [editMode, setEditMode] = useState(false);
-  const { user, loading } = useUser();
+  const { user, loading, setUser } = useUser();
 
   if (loading) {
     return <div>Loading...</div>;
@@ -38,7 +38,7 @@ function MainProfile() {
             <EditProfile
               userData={user}
               onSave={(updatedData) => {
-                setUserData(updatedData);
+                setUser(updatedData);
                 setEditMode(false);
               }}
             />
