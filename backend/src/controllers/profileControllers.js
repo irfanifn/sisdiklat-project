@@ -1,18 +1,12 @@
 import { prisma } from "../configs/utils.js";
 
 const getUserProfile = async (req, res) => {
-  // console.log("getUserProfile called"); // Debug 1
-  // console.log("req.user:", req.user); // Debug 2
-
   const user_id = req.user.user_id;
-  // console.log("user_id:", user_id); // Debug 3
 
   try {
     const userProfile = await prisma.user.findUnique({
       where: { user_id: parseInt(user_id) },
     });
-
-    // console.log("userProfile from DB:", userProfile); // Debug 4
 
     if (!userProfile) {
       return res.status(404).json({
@@ -27,7 +21,6 @@ const getUserProfile = async (req, res) => {
       message: "Profile retrieved successfully",
     });
   } catch (err) {
-    // console.log("Error:", err); // Debug 5
     res.status(500).json({
       data: null,
       message: err.message,

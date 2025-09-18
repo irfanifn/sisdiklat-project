@@ -1,9 +1,19 @@
 import React from "react";
 import { Menu } from "lucide-react";
 import { useLocation } from "react-router-dom";
+import { useUser } from "../contexts/UserContext";
 
 function Header() {
   const location = useLocation();
+  const { user, loading } = useUser();
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!user) {
+    return <div>Silakan Login</div>;
+  }
 
   const getTitle = () => {
     switch (location.pathname) {
@@ -30,7 +40,7 @@ function Header() {
               {getTitle()}
             </h1>
             <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
-              Welcome, Irfan!
+              Welcome, {user.nama}!
             </p>
           </div>
         </div>
