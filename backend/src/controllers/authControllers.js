@@ -1,65 +1,69 @@
 import { prisma } from "../configs/utils.js";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
+import bcrypt from "bcrypt";
 
 const login = async (req, res) => {
   const { nip } = req.body;
 
   try {
+    // Cari user berdasarkan NIP yang diinput
     const user = await prisma.user.findUnique({
-      where: { nip },
+      where: { nip: nip.toString() }, // Gunakan toString() untuk memastikan tipe data
     });
 
     if (!user) {
       return res.status(401).json({
-        message: "NIP Salah",
+        success: false,
+        message: "NIP tidak valid",
       });
     }
 
     // Periksa apakah NIP di database sudah dalam format hash bcrypt
     if (user.nip.startsWith("$2")) {
       const isMatch = await bcrypt.compare(nip, user.nip);
-
       if (!isMatch) {
-        return res.status(401).json({ message: "Nip Salah" });
-      }
-    } else {
-      // Jika NIP belum di hash
-      if (nip !== user.nip) {
         return res.status(401).json({
-          message: "Nip Salah",
+          success: false,
+          message: "NIP tidak valid",
         });
       }
-
-      // Hash NIP yang baru dimasukkan
-      const hashedNIp = await bcrypt.hash(nip, 10);
-
-      // Perbarui NIP di database dengan versi yang sudah di-hash
+    } else {
+      // Jika NIP belum di-hash (migrasi data)
+      if (nip !== user.nip) {
+        return res.status(401).json({
+          success: false,
+          message: "NIP tidak valid",
+        });
+      }
+      // Hash NIP dan perbarui di database
+      const hashedNip = await bcrypt.hash(nip, 10);
       await prisma.user.update({
         where: { user_id: user.user_id },
-        data: { nip: hashedNIp },
+        data: { nip: hashedNip },
       });
     }
 
     // Buat token JWT
     const token = jwt.sign(
-      {
-        user_id: user.user_id,
-        nip: user.nip,
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+      { user_id: user.user_id, nip: user.nip }, // Payload
+      process.env.JWT_SECRET, // Secret
+      { expiresIn: "1h" } // Opsi
     );
 
+    // Hapus properti sensitif sebelum mengirim data user
+    const { password, refreshToken, ...userData } = user;
+
     res.status(200).json({
-      message: "Login Berhasil",
+      success: true,
+      message: "Login berhasil",
       token,
-      status: "Success",
+      user: userData,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
-      message: "Terjadi Kesalahan Server",
-      error: error.message,
+      success: false,
+      message: error.message || "Terjadi kesalahan server",
     });
   }
 };

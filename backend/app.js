@@ -8,7 +8,7 @@ const port = 3000;
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/users", userRouter);
+app.use("/api", userRouter);
 app.use("/api", profileRouter);
 
 app.get("/", (req, res) => {
