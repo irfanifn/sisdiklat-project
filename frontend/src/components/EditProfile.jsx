@@ -49,7 +49,7 @@ function EditProfile({ userData, onSave }) {
       <div>
         <label
           htmlFor="nama"
-          className="block text-sm font-medium text-gray-100 mb-1"
+          className="block text-sm font-medium text-slate-700 dark:text-slate-200 rounded-lg transition mb-1"
         >
           Nama
         </label>
@@ -59,14 +59,14 @@ function EditProfile({ userData, onSave }) {
           id="nama"
           value={form.nama || ""}
           onChange={handleChange}
-          className="w-full px-3 py-2 text-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border text-gray-600 dark:text-gray-400  border-gray-400 dark:border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           required
         />
       </div>
       <div>
         <label
           htmlFor="nip"
-          className="block text-sm font-medium text-gray-100 mb-1"
+          className="block text-sm font-medium text-slate-700 dark:text-slate-200 rounded-lg transition mb-1"
         >
           NIP
         </label>
@@ -77,13 +77,13 @@ function EditProfile({ userData, onSave }) {
           value={form.nip || ""}
           disabled
           onChange={handleChange}
-          className="w-full px-3 py-2 border text-gray-400 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border text-gray-600 dark:text-gray-400  border-gray-400 dark:border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
       <div>
         <label
           htmlFor="nip"
-          className="block text-sm font-medium text-gray-100 mb-1"
+          className="block text-sm font-medium text-slate-700 dark:text-slate-200 rounded-lg transition mb-1"
         >
           Email Address
         </label>
@@ -93,13 +93,13 @@ function EditProfile({ userData, onSave }) {
           id="email"
           value={form.email || ""}
           onChange={handleChange}
-          className="w-full px-3 py-2 border text-gray-400 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border text-gray-600 dark:text-gray-400  border-gray-400 dark:border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
       <div>
         <label
           htmlFor="nip"
-          className="block text-sm font-medium text-gray-100 mb-1"
+          className="block text-sm font-medium text-slate-700 dark:text-slate-200 rounded-lg transition mb-1"
         >
           Jabatan
         </label>
@@ -109,13 +109,13 @@ function EditProfile({ userData, onSave }) {
           id="jabatan"
           value={form.jabatan || ""}
           onChange={handleChange}
-          className="w-full px-3 py-2 border text-gray-400 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border text-gray-600 dark:text-gray-400  border-gray-400 dark:border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
       <div>
         <label
           htmlFor="nip"
-          className="block text-sm font-medium text-gray-100 mb-1"
+          className="block text-sm font-medium text-slate-700 dark:text-slate-200 rounded-lg transition mb-1"
         >
           OPD
         </label>
@@ -125,13 +125,13 @@ function EditProfile({ userData, onSave }) {
           id="nama_opd"
           value={form.nama_opd || ""}
           onChange={handleChange}
-          className="w-full px-3 py-2 border text-gray-400 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border text-gray-600 dark:text-gray-400  border-gray-400 dark:border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
       <button
         type="submit"
         disabled={loading}
-        className="w-full px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white dark:bg-blue-900 hover:bg-indigo-700 disabled:opacity-50"
+        className="w-full px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-slate-700 dark:text-slate-200 bg-blue-300 dark:bg-blue-900 hover:bg-blue-200 dark:hover:bg-slate-800 disabled:opacity-50 transition"
       >
         {loading ? "Saving..." : "Save"}
       </button>
