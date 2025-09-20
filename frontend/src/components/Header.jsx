@@ -8,6 +8,7 @@ function Header() {
   const location = useLocation();
   const { user, loading } = useUser();
   const { isDark, toggleTheme } = useTheme();
+  console.log("Current theme:", isDark ? "dark" : "light");
 
   if (loading) {
     return <div>Loading...</div>;
@@ -30,23 +31,20 @@ function Header() {
     }
   };
   return (
-    <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-700/50 px-6 py-4">
+    <div className="bg-header border-b border-custom px-6 py-4">
       <div className="flex items-center justify-between">
         {/* Left Section */}
         <div className="flex items-center space-x-4">
-          <button className="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <button className="p-2 rounded-lg text-primary">
             <Menu className="w-5 h-5" />
           </button>
           <div className="hidden md:block">
-            <h1 className="text-2xl font-black text-slate-800 dark:text-white">
-              {getTitle()}
-            </h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
+            <h1 className="text-2xl font-black text-primary">{getTitle()}</h1>
+            <p className="text-xs text-secondary truncate">
               Welcome, {user.nama}!
             </p>
           </div>
         </div>
-        {/* Right Section */}
         <div className="flex items-center">
           <button
             onClick={toggleTheme}

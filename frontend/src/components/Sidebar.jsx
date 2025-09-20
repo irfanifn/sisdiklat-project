@@ -18,11 +18,11 @@ function Sidebar() {
   return (
     <div
       className={
-        '$collapsed ? "w-20" : "w-72"} transition duration-300 ease-in-out bg-white/80 dark:bg-slate-900/80 backdrop-blur-x1 border-r border-slate-200/50 dark:border-slate-700 flex flex-col relative z-10'
+        '$collapsed ? "w-20" : "w-72"} bg-header border-r border-custom flex flex-col relative z-10'
       }
     >
       {/* Logo */}
-      <div className="p-6 border-slate-200/50 dark:border-slate-700/50">
+      <div className="p-6 border-custom">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
             <Zap className="w-6 h-6 text-white" />
@@ -30,12 +30,8 @@ function Sidebar() {
 
           {/* conditional Rendering */}
           <div>
-            <h1 className="text-xl font-bold text-slate-800 dark:text-white">
-              E-TUBE
-            </h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Halaman {user.role}
-            </p>
+            <h1 className="text-xl font-bold text-primary">E-TUBE</h1>
+            <p className="text-xs text-secondary">Halaman {user.role}</p>
           </div>
         </div>
       </div>
@@ -47,10 +43,8 @@ function Sidebar() {
             <NavLink
               to="/pegawai/dashboard"
               className={({ isActive }) =>
-                `flex w-full items-center px-3 py-2 text-left text-slate-700 dark:text-slate-200 rounded-lg transition ${
-                  isActive
-                    ? "bg-blue-200 dark:bg-blue-900"
-                    : "hover:bg-blue-100 dark:hover:bg-slate-800"
+                `flex w-full items-center px-3 py-2 text-left text-primary rounded-lg ${
+                  isActive ? "bg-btn-primary" : "bg-btn-primary:hover"
                 }`
               }
             >
@@ -63,10 +57,8 @@ function Sidebar() {
             <NavLink
               to="/profile"
               className={({ isActive }) =>
-                `flex w-full items-center px-3 py-2 text-left text-slate-700 dark:text-slate-200 rounded-lg transition ${
-                  isActive
-                    ? "bg-blue-200 dark:bg-blue-900"
-                    : "hover:bg-blue-100 dark:hover:bg-slate-800"
+                `flex w-full items-center px-3 py-2 text-left text-primary rounded-lg ${
+                  isActive ? "bg-btn-primary" : "bg-btn-primary:hover"
                 }`
               }
             >
@@ -79,10 +71,8 @@ function Sidebar() {
             <NavLink
               to="/pegawai/usulan"
               className={({ isActive }) =>
-                `flex w-full items-center px-3 py-2 text-left text-slate-700 dark:text-slate-200 rounded-lg transition ${
-                  isActive
-                    ? "bg-blue-200 dark:bg-blue-900"
-                    : "hover:bg-blue-100 dark:hover:bg-slate-800"
+                `flex w-full items-center px-3 py-2 text-left text-primary rounded-lg ${
+                  isActive ? "bg-btn-primary" : "bg-btn-primary:hover"
                 }`
               }
             >
@@ -95,10 +85,8 @@ function Sidebar() {
             <NavLink
               to="/pegawai/status"
               className={({ isActive }) =>
-                `flex w-full items-center px-3 py-2 text-left text-slate-700 dark:text-slate-200 rounded-lg transition ${
-                  isActive
-                    ? "bg-blue-200 dark:bg-blue-900"
-                    : "hover:bg-blue-100 dark:hover:bg-slate-800"
+                `flex w-full items-center px-3 py-2 text-left text-primary rounded-lg ${
+                  isActive ? "bg-btn-primary" : "bg-btn-primary:hover"
                 }`
               }
             >

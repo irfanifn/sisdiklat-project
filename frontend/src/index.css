@@ -1,96 +1,79 @@
 /* Importing Google Fonts - Montserrat */
 @import url("https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 @import "tailwindcss";
-@import "tailwindcss/preflight";
-@tailwind utilities;
+@import "tailwindcss/preflight" layer(base);
+@import "tailwindcss/utilities" layer(utilities);
 
 /* Custom CSS Styles */
-/* * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Montserrat", sans-serif;
+@layer base {
+  :root {
+    /* Light mode - Blue-tinted whites */
+    --bg-header: rgba(255, 255, 255, 0.8);
+    --bg-main: linear-gradient(to bottom right, #e2e8f0, #dbeafe, #e0e7ff);
+    --bg-card: rgba(248, 250, 252, 0.9);
+    --bg-button: #93c5fd;
+    --bg-button-hover: #adc0d8;
+
+    --text-primary: #334155;
+    --text-secondary: #64748b;
+    --text-white: #1e293b;
+
+    --border-color: rgba(226, 232, 240, 0.5);
+    --backdrop-blur: blur(12px);
+  }
+
+  .dark {
+    /* Dark mode - Blue-tinted grays */
+    --bg-header: rgba(15, 23, 42, 0.8);
+    --bg-main: linear-gradient(to bottom right, #0f172a, #1e293b, #334155);
+    --bg-card: rgba(30, 41, 59, 0.9);
+    --bg-button: #1e3a8a;
+    --bg-button-hover: #314769;
+
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --text-white: #f8fafc;
+
+    --border-color: rgba(51, 65, 85, 0.5);
+    --backdrop-blur: blur(12px);
+  }
 }
 
-body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  background-color: #f7f6bb;
-}
+@layer utilities {
+  .bg-header {
+    background-color: var(--bg-header);
+    backdrop-filter: var(--backdrop-blur);
+  }
 
-input {
-  border: 1px solid #686868;
-  border-radius: 10px;
-}
+  .bg-main-gradient {
+    background: var(--bg-main);
+  }
 
-#root {
-  width: 100%;
-  padding: 0 0.6rem;
-}
+  .bg-card {
+    background-color: var(--bg-card);
+  }
 
-.login-container {
-  max-width: 410px;
-  margin: 0 auto;
-  border-radius: 0.5rem;
-  padding: 2rem 1.5rem;
-  background-color: #ffffff;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-}
+  .bg-btn-primary {
+    background-color: var(--bg-button);
+  }
 
-.login-container .form-title {
-  text-align: center;
-  font-size: 2rem;
-  font-weight: 600;
-  margin-bottom: 1.8rem;
-}
+  .bg-btn-primary:hover {
+    background-color: var(--bg-button-hover);
+  }
 
-.login-form .input-wrapper {
-  height: 54px;
-  width: 100%;
-  margin-bottom: 1.5rem;
-  position: relative;
-}
+  .text-primary {
+    color: var(--text-primary);
+  }
 
-.login-form .input-wrapper .input-field {
-  height: 100%;
-  width: 100%;
-  border-radius: 1px solid #bfb3f2;
-  padding: 0 1.25rem 0 3.12rem;
-  transition: 0.2s ease;
-}
+  .text-secondary {
+    color: var(--text-secondary);
+  }
 
-.login-form .input-wrapper .input-field:focus {
-  border-color: #e0c52d;
-}
+  .text-contrast {
+    color: var(--text-white);
+  }
 
-.login-form .input-wrapper .input-field::placeholder {
-  color: #3e5f1b;
+  .border-custom {
+    border-color: var(--border-color);
+  }
 }
-
-.login-form .input-wrapper span {
-  color: #413702;
-  position: absolute;
-  top: 50%;
-  left: 0.9rem;
-  pointer-events: none;
-  transform: translateY(-50%);
-}
-
-.login-form .login-button {
-  width: 100%;
-  height: 50px;
-  cursor: pointer;
-  outline: none;
-  font-size: 1.125rem;
-  color: #ffffff;
-  font-weight: 500;
-  border-radius: 0.3rem;
-  background: #3e5f1b;
-  transition: 0.2s ease;
-}
-
-.login-form .login-button:hover {
-  background: #2e3e13;
-} */

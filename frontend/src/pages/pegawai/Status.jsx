@@ -4,8 +4,9 @@ import Header from "../../components/Header";
 
 function Status() {
   const [currentPage, setCurrentPage] = useState("Status");
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-all duration-500">
+    <div className="min-h-screen bg-main-gradient">
       <div className="flex h-screen overflow-hidden">
         <Sidebar currentPage={currentPage} onPageChange={setCurrentPage} />
         <div className="flex-1 flex flex-col overfolow-hidden">
