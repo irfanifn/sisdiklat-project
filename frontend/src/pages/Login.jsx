@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { baseUrl } from "../configs/constant.js";
+import { useUser } from "../contexts/UserContext.jsx";
 
 function Login() {
   const [nip, setNip] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { setUser } = useUser();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,6 +25,8 @@ function Login() {
         // Simpan token & user data
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("user", JSON.stringify(response.data.user));
+
+        setUser(response.data.user);
 
         // Redirect berdasarkan role
         const userRole = response.data.user.role.toLowerCase();
