@@ -11,11 +11,40 @@ function Header() {
   console.log("Current theme:", isDark ? "dark" : "light");
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-main-gradient">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-primary text-lg">Loading...</p>
+        </div>
+      </div>
+    );
   }
 
   if (!user) {
-    return <div>Silakan Login</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-main-gradient">
+        <div className="text-center bg-card p-8 rounded-lg shadow-lg">
+          <div className="mb-4">
+            <span className="material-symbols-rounded text-6xl text-secondary">
+              person_off
+            </span>
+          </div>
+          <h2 className="text-xl font-semibold text-primary mb-2">
+            Authentication Required
+          </h2>
+          <p className="text-secondary mb-4">
+            Silakan login untuk mengakses halaman ini
+          </p>
+          <button
+            onClick={() => navigate("/")}
+            className="bg-btn-primary text-contrast px-4 py-2 rounded-lg hover:bg-btn-primary transition"
+          >
+            Go to Login
+          </button>
+        </div>
+      </div>
+    );
   }
 
   const getTitle = () => {
