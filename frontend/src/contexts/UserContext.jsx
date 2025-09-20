@@ -34,12 +34,19 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  // Fungsi logout
+  const logout = () => {
+    localStorage.removeItem("token"); // Hapus token dari localStorage
+    setUser(null);
+    window.location.href = "/";
+  };
+
   useEffect(() => {
     fetchLoggedInUser();
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, setUser, loading }}>
+    <UserContext.Provider value={{ user, setUser, loading, logout }}>
       {children}
     </UserContext.Provider>
   );

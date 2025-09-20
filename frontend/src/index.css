@@ -13,6 +13,8 @@
     --bg-card: rgba(248, 250, 252, 0.9);
     --bg-button: #93c5fd;
     --bg-button-hover: #adc0d8;
+    --bg-button-logout: #df3838;
+    --bg-button-logout-hover: #f79090;
 
     --text-primary: #334155;
     --text-secondary: #64748b;
@@ -29,6 +31,8 @@
     --bg-card: rgba(30, 41, 59, 0.9);
     --bg-button: #1e3a8a;
     --bg-button-hover: #314769;
+    --bg-button-logout: #b42626;
+    --bg-button-logout-hover: #6d2d2d;
 
     --text-primary: #e2e8f0;
     --text-secondary: #94a3b8;
@@ -59,6 +63,14 @@
 
   .bg-btn-primary:hover {
     background-color: var(--bg-button-hover);
+  }
+
+  .bg-btn-logout {
+    background-color: var(--bg-button-logout);
+  }
+
+  .bg-btn-logout:hover {
+    background: var(--bg-button-logout-hover);
   }
 
   .text-primary {
