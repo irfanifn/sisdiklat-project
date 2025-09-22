@@ -24,7 +24,6 @@ model user {
   usulan              usulan[]
 }
 
-
 model usulan {
   usulan_id           Int       @id @default(autoincrement())
   user_id             Int
@@ -37,7 +36,7 @@ model usulan {
 
 model dokumenSyarat {
   dok_id              Int       @id @default(autoincrement())
-  usulan_id           Int
+  usulan_id           Int       @unique
   nama_file           String    @db.VarChar(255)
   path_file           String    @db.VarChar(255)
   status_verifikasi   String    @db.VarChar(50)
