@@ -33,13 +33,13 @@ function Login() {
 
         switch (userRole) {
           case "pegawai":
-            navigate("/pegawai/dashboard");
+            navigate("/dashboard");
             break;
           case "bkpsdm":
-            navigate("/bkpsdm/dashboard");
+            navigate("/dashboard");
             break;
           case "pimpinan":
-            navigate("/pimpinan/dashboard");
+            navigate("/dashboard");
             break;
           default:
             setError("Role tidak dikenali");

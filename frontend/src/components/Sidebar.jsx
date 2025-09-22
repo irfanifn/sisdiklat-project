@@ -70,7 +70,7 @@ function Sidebar() {
         <ul className="space-y-1">
           <li>
             <NavLink
-              to="/pegawai/dashboard"
+              to="/dashboard"
               className={({ isActive }) =>
                 `flex w-full items-center px-3 py-2 text-left text-primary rounded-lg ${
                   isActive ? "bg-btn-primary" : "bg-btn-primary:hover"
@@ -81,7 +81,6 @@ function Sidebar() {
               Dashboard
             </NavLink>
           </li>
-
           <li>
             <NavLink
               to="/profile"
@@ -95,21 +94,39 @@ function Sidebar() {
               Profile
             </NavLink>
           </li>
-
-          <li>
-            <NavLink
-              to="/pegawai/usulan"
-              className={({ isActive }) =>
-                `flex w-full items-center px-3 py-2 text-left text-primary rounded-lg ${
-                  isActive ? "bg-btn-primary" : "bg-btn-primary:hover"
-                }`
-              }
-            >
-              <span className="material-symbols-rounded mr-3">assignment</span>
-              Usulan
-            </NavLink>
-          </li>
-
+          {user.role === "pegawai" ? (
+            <li>
+              <NavLink
+                to="/pegawai/usulan"
+                className={({ isActive }) =>
+                  `flex w-full items-center px-3 py-2 text-left text-primary rounded-lg ${
+                    isActive ? "bg-btn-primary" : "bg-btn-primary:hover"
+                  }`
+                }
+              >
+                <span className="material-symbols-rounded mr-3">
+                  assignment
+                </span>
+                Usulan
+              </NavLink>
+            </li>
+          ) : (
+            <li>
+              <NavLink
+                to="/pegawai/pengajuan"
+                className={({ isActive }) =>
+                  `flex w-full items-center px-3 py-2 text-left text-primary rounded-lg ${
+                    isActive ? "bg-btn-primary" : "bg-btn-primary:hover"
+                  }`
+                }
+              >
+                <span className="material-symbols-rounded mr-3">
+                  assignment
+                </span>
+                Pengajuan
+              </NavLink>
+            </li>
+          )}
           <li>
             <NavLink
               to="/pegawai/status"

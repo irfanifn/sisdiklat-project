@@ -49,7 +49,7 @@ function Header() {
 
   const getTitle = () => {
     switch (location.pathname) {
-      case "/pegawai/dashboard":
+      case "/dashboard":
         return "Dashboard";
       case "/pegawai/status":
         return "Riwayat Status";
