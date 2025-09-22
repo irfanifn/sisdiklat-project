@@ -112,7 +112,7 @@ function Sidebar() {
 
           <li>
             <NavLink
-              to="/status"
+              to="/pegawai/status"
               className={({ isActive }) =>
                 `flex w-full items-center px-3 py-2 text-left text-primary rounded-lg ${
                   isActive ? "bg-btn-primary" : "bg-btn-primary:hover"
