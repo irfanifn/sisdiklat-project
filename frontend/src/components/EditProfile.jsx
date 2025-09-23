@@ -40,16 +40,20 @@ function EditProfile({ userData, onSave }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-md mx-auto py-8">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6 max-w-md mx-auto py-8 bg-white dark:bg-gray-800 p-6 rounded-lg"
+    >
       {error && (
-        <div className="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded">
+        <div className="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-200 px-4 py-3 rounded">
           {error}
         </div>
       )}
+
       <div>
         <label
           htmlFor="nama"
-          className="block text-sm font-medium text-primary rounded-lg mb-1"
+          className="block text-sm font-medium text-gray-800 dark:text-white mb-1"
         >
           Nama
         </label>
@@ -59,14 +63,15 @@ function EditProfile({ userData, onSave }) {
           id="nama"
           value={form.nama || ""}
           onChange={handleChange}
-          className="w-full px-3 py-2 border text-secondary border-gray-400 dark:border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           required
+          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
+
       <div>
         <label
           htmlFor="nip"
-          className="block text-sm font-medium text-primary rounded-lg mb-1"
+          className="block text-sm font-medium text-gray-800 dark:text-white mb-1"
         >
           NIP
         </label>
@@ -77,13 +82,14 @@ function EditProfile({ userData, onSave }) {
           value={form.nip || ""}
           disabled
           onChange={handleChange}
-          className="w-full px-3 py-2 border text-secondary border-gray-400 dark:border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 cursor-not-allowed"
         />
       </div>
+
       <div>
         <label
-          htmlFor="nip"
-          className="block text-sm font-medium text-primary rounded-lg mb-1"
+          htmlFor="email"
+          className="block text-sm font-medium text-gray-800 dark:text-white mb-1"
         >
           Email Address
         </label>
@@ -93,13 +99,14 @@ function EditProfile({ userData, onSave }) {
           id="email"
           value={form.email || ""}
           onChange={handleChange}
-          className="w-full px-3 py-2 border text-secondary border-gray-400 dark:border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
+
       <div>
         <label
-          htmlFor="nip"
-          className="block text-sm font-medium text-primary rounded-lg mb-1"
+          htmlFor="jabatan"
+          className="block text-sm font-medium text-gray-800 dark:text-white mb-1"
         >
           Jabatan
         </label>
@@ -109,13 +116,14 @@ function EditProfile({ userData, onSave }) {
           id="jabatan"
           value={form.jabatan || ""}
           onChange={handleChange}
-          className="w-full px-3 py-2 border text-secondary border-gray-400 dark:border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
+
       <div>
         <label
-          htmlFor="nip"
-          className="block text-sm font-medium text-primary rounded-lg mb-1"
+          htmlFor="nama_opd"
+          className="block text-sm font-medium text-gray-800 dark:text-white mb-1"
         >
           OPD
         </label>
@@ -125,13 +133,14 @@ function EditProfile({ userData, onSave }) {
           id="nama_opd"
           value={form.nama_opd || ""}
           onChange={handleChange}
-          className="w-full px-3 py-2 border text-secondary border-gray-400 dark:border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
+
       <button
         type="submit"
         disabled={loading}
-        className="w-full px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-primary bg-btn-primary bg-btn-primary:hover disabled:opacity-50"
+        className="w-full px-4 py-2 text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 transition-colors disabled:opacity-50"
       >
         {loading ? "Saving..." : "Save"}
       </button>

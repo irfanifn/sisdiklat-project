@@ -12,10 +12,10 @@ function Header() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-main-gradient">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-950 dark:to-black">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-primary text-lg">Loading...</p>
+          <p className="text-gray-900 dark:text-gray-100 text-lg">Loading...</p>
         </div>
       </div>
     );
@@ -23,22 +23,22 @@ function Header() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-main-gradient">
-        <div className="text-center bg-card p-8 rounded-lg shadow-lg">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-950 dark:to-black">
+        <div className="text-center bg-white dark:bg-slate-800 p-8 rounded-lg shadow-lg">
           <div className="mb-4">
-            <span className="material-symbols-rounded text-6xl text-secondary">
+            <span className="material-symbols-rounded text-6xl text-gray-600 dark:text-gray-400">
               person_off
             </span>
           </div>
-          <h2 className="text-xl font-semibold text-primary mb-2">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
             Authentication Required
           </h2>
-          <p className="text-secondary mb-4">
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
             Silakan login untuk mengakses halaman ini
           </p>
           <button
             onClick={() => navigate("/")}
-            className="bg-btn-primary text-contrast px-4 py-2 rounded-lg hover:bg-btn-primary transition"
+            className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition"
           >
             Go to Login
           </button>
@@ -59,17 +59,20 @@ function Header() {
         return "Profile";
     }
   };
+
   return (
-    <div className="bg-header border-b border-custom px-6 py-4">
+    <div className="bg-gray-50 dark:bg-slate-900 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
       <div className="flex items-center justify-between">
         {/* Left Section */}
         <div className="flex items-center space-x-4">
-          <button className="p-2 rounded-lg text-primary">
+          <button className="p-2 rounded-lg text-gray-900 dark:text-gray-100">
             <Menu className="w-5 h-5" />
           </button>
           <div className="hidden md:block">
-            <h1 className="text-2xl font-black text-primary">{getTitle()}</h1>
-            <p className="text-xs text-secondary truncate">
+            <h1 className="text-2xl font-black text-gray-900 dark:text-gray-100">
+              {getTitle()}
+            </h1>
+            <p className="text-xs text-gray-600 dark:text-gray-400 truncate">
               Welcome, {user.nama}!
             </p>
           </div>

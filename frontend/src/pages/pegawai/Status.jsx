@@ -53,7 +53,7 @@ function Status() {
   };
 
   return (
-    <div className="min-h-screen bg-main-gradient">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="flex h-screen overflow-hidden">
         <Sidebar currentPage={currentPage} onPageChange={setCurrentPage} />
         <div className="flex-1 flex flex-col overflow-hidden">
@@ -62,30 +62,32 @@ function Status() {
           {/* Main Content */}
           <div className="flex-1 overflow-auto p-6">
             <div className="max-w-6xl mx-auto">
-              <h1 className="text-2xl font-bold text-primary mb-3">
+              <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-3">
                 Riwayat Status Usulan
               </h1>
 
               {/* Loading State */}
               {loading && (
                 <div className="text-center py-8">
-                  <p className="text-secondary">Memuat data...</p>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    Memuat data...
+                  </p>
                 </div>
               )}
 
               {/* Error State */}
               {error && (
-                <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg mb-6">
+                <div className="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-200 px-4 py-3 rounded-lg mb-6">
                   {error}
                 </div>
               )}
 
               {/* Table */}
               {!loading && !error && (
-                <div className="bg-card border-custom rounded-xl shadow-md overflow-hidden">
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
                   {usulan.length === 0 ? (
                     <div className="text-center py-8">
-                      <p className="text-secondary">
+                      <p className="text-gray-600 dark:text-gray-400">
                         Belum ada usulan yang diajukan
                       </p>
                     </div>
@@ -93,29 +95,29 @@ function Status() {
                     <>
                       <div className="overflow-x-auto">
                         <table className="w-full">
-                          <thead className="bg-gradient-to-br bg-card">
+                          <thead className="bg-gray-100 dark:bg-gray-700">
                             <tr>
-                              <th className="px-6 py-3 text-left text-xs font-medium text-primary uppercase tracking-wider">
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 dark:text-white uppercase tracking-wider">
                                 Jenis Usulan
                               </th>
-                              <th className="px-6 py-3 text-left text-xs font-medium text-primary uppercase tracking-wider">
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 dark:text-white uppercase tracking-wider">
                                 Tanggal Pengajuan
                               </th>
-                              <th className="px-6 py-3 text-left text-xs font-medium text-primary uppercase tracking-wider">
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 dark:text-white uppercase tracking-wider">
                                 Status
                               </th>
                             </tr>
                           </thead>
-                          <tbody className="divide-y">
+                          <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                             {usulan.map((usulan) => (
                               <tr
                                 key={usulan.usulan_id}
-                                className="hover:bg-btn-primary/10 transition"
+                                className="hover:bg-gray-50 dark:hover:bg-gray-700 transition"
                               >
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-secondary">
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
                                   {usulan.jenis_usulan}
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-secondary">
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
                                   {formatDate(usulan.tanggal_pengajuan)}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
@@ -134,9 +136,9 @@ function Status() {
                         </table>
                       </div>
 
-                      {/* Cards untuk Catatan */}
+                      {/* Catatan Admin */}
                       <div className="p-6 space-y-4">
-                        <h3 className="text-lg font-medium text-primary mb-4">
+                        <h3 className="text-lg font-medium text-gray-800 dark:text-white mb-4">
                           Catatan dari Admin
                         </h3>
                         {usulan
@@ -146,11 +148,11 @@ function Status() {
                           .map((usulan) => (
                             <div
                               key={usulan.usulan_id}
-                              className="bg-card border-custom rounded-lg p-4 shadow-sm"
+                              className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 shadow-sm"
                             >
                               <div className="flex justify-between items-start mb-2">
-                                <span className="font-medium text-primary">
-                                  {usulan.jenis_usulan} -{" "}
+                                <span className="font-medium text-gray-800 dark:text-white">
+                                  {usulan.jenis_usulan} –{" "}
                                   {formatDate(usulan.tanggal_pengajuan)}
                                 </span>
                                 <span
@@ -162,14 +164,14 @@ function Status() {
                                     "pending"}
                                 </span>
                               </div>
-                              <p className="text-sm text-secondary">
+                              <p className="text-sm text-gray-700 dark:text-gray-300">
                                 {usulan.riwayatStatus?.[0]?.catatan}
                               </p>
                             </div>
                           ))}
                         {usulan.filter((u) => u.riwayatStatus?.[0]?.catatan)
                           .length === 0 && (
-                          <p className="text-secondary text-sm italic">
+                          <p className="text-gray-600 dark:text-gray-400 text-sm italic">
                             Belum ada catatan dari admin
                           </p>
                         )}
