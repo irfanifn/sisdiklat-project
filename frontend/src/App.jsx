@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import PegawaiDashboard from "./pages/Dashboard";
 import BKPSDMDashboard from "./pages/Dashboard";
+import BKPSDMPengajuan from "./pages/bkpsdm/Pengajuan";
 import PimpinanDashboard from "./pages/Dashboard";
 import UserProfile from "./pages/Profile";
 import PegawaiUsulan from "./pages/pegawai/Usulan";
@@ -17,6 +18,7 @@ const App = () => {
       <Route path="/pegawai/usulan" element={<PegawaiUsulan />} />
       <Route path="/pegawai/status" element={<PegawaiStatus />} />
       <Route path="/dashboard" element={<BKPSDMDashboard />} />
+      <Route path="/bkpsdm/pengajuan" element={<BKPSDMPengajuan />} />
       <Route path="/dashboard" element={<PimpinanDashboard />} />
     </Routes>
   );
