@@ -55,6 +55,10 @@ function Header() {
         return "Riwayat Status";
       case "/pegawai/usulan":
         return "Usulan";
+      case "/bkpsdm/pengajuan":
+        return "Pengajuan";
+      case "/bkpsdm/status":
+        return "Riwayat status";
       default:
         return "Profile";
     }

@@ -138,11 +138,11 @@ function Pengajuan() {
               )}
 
               {/* Card Section */}
-              <div className="grid md:grid-cols-2 gap-6">
-                <JenisUsulanCard
+              <div className="grid gap-6">
+                {/* <JenisUsulanCard
                   jenisUsulanData={jenisUsulanData}
                   setJenisUsulanData={setJenisUsulanData}
-                />
+                /> */}
 
                 <SyaratDokumenCard
                   syaratDokumenData={syaratDokumenData}
