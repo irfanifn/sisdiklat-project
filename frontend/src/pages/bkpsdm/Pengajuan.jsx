@@ -31,11 +31,11 @@ function Pengajuan() {
 
       if (response.data.success) {
         setPengajuans(response.data.data);
+        setError("");
       }
     } catch (err) {
-      // Sementara pakai data dummy kalau endpoint belum ada
-      console.log("Endpoint admin belum ada, pakai data dummy");
-      setError("");
+      console.error("Error fetching pengajuans:", err);
+      setError(err.response?.data?.message || "Gagal memuat data pengajuan");
     } finally {
       setLoading(false);
     }
@@ -50,15 +50,33 @@ function Pengajuan() {
     if (
       confirm("Yakin sudah memeriksa dokumen dan akan menyetujui usulan ini?")
     ) {
+      setPengajuans((prev) =>
+        prev.map((p) =>
+          p.usulan_id === usulanId
+            ? { ...p, riwayatStatus: [{ status: "disetujui" }] }
+            : p
+        )
+      );
+
       try {
-        // TODO: API call approve
-        console.log("Approve usulan ID:", usulanId);
-        alert("Usulan berhasil disetujui!");
-        // Refresh data setelah approve
-        fetchPengajuans();
+        const token = localStorage.getItem("token");
+        const response = await axios.put(
+          `${baseUrl}/api/bkpsdm/pengajuan/${usulanId}/approve`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.data.success) {
+          alert("Usulan berhasil disetujui!");
+        }
       } catch (err) {
         console.error("Error approve:", err);
-        alert("Gagal menyetujui usulan");
+        alert(err.response?.data?.message || "Gagal menyetujui usulan");
+        fetchPengajuans();
       }
     }
   };
@@ -67,15 +85,33 @@ function Pengajuan() {
   const handleReject = async (usulanId) => {
     const catatan = prompt("Masukkan alasan penolakan:");
     if (catatan && catatan.trim()) {
+      setPengajuans((prev) =>
+        prev.map((p) =>
+          p.usulan_id === usulanId
+            ? { ...p, riwayatStatus: [{ status: "ditolak" }] }
+            : p
+        )
+      );
+
       try {
-        // TODO: API call reject dengan catatan
-        console.log("Reject usulan ID:", usulanId, "Catatan:", catatan);
-        alert("Usulan berhasil ditolak!");
-        // Refresh data setelah reject
-        fetchPengajuans();
+        const token = localStorage.getItem("token");
+        const response = await axios.put(
+          `${baseUrl}/api/bkpsdm/pengajuan/${usulanId}/reject`,
+          { catatan: catatan.trim() },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.data.success) {
+          alert("Usulan berhasil ditolak!");
+        }
       } catch (err) {
         console.error("Error reject:", err);
-        alert("Gagal menolak usulan");
+        alert(err.response?.data?.message || "Gagal menolak usulan");
+        fetchPengajuans();
       }
     }
   };

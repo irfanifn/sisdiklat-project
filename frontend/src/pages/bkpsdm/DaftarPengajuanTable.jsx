@@ -6,6 +6,27 @@ const DaftarPengajuanTable = ({ pengajuans, loading, onApprove, onReject }) => {
     return new Date(dateString).toLocaleDateString("id-ID");
   };
 
+  // Function untuk styling status
+  const getStatusStyle = (status) => {
+    switch (status?.toLowerCase()) {
+      case "disetujui":
+        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200";
+      case "ditolak":
+        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200";
+      case "pending":
+      default:
+        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200";
+    }
+  };
+
+  // Function untuk cek apakah usulan sudah diproses
+  const isProcessed = (status) => {
+    return (
+      status?.toLowerCase() === "disetujui" ||
+      status?.toLowerCase() === "ditolak"
+    );
+  };
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-600">
@@ -78,76 +99,48 @@ const DaftarPengajuanTable = ({ pengajuans, loading, onApprove, onReject }) => {
                       {formatDate(pengajuan.tanggal_pengajuan)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
-                      <button
-                        onClick={() => onApprove(pengajuan.usulan_id)}
-                        className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
-                        title="Setujui"
-                      >
-                        ✓
-                      </button>
-                      <button
-                        onClick={() => onReject(pengajuan.usulan_id)}
-                        className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
-                        title="Tolak"
-                      >
-                        ✗
-                      </button>
+                      {isProcessed(pengajuan.riwayatStatus?.[0]?.status) ? (
+                        <span
+                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusStyle(
+                            pengajuan.riwayatStatus?.[0]?.status
+                          )}`}
+                        >
+                          Sudah diproses (
+                          {pengajuan.riwayatStatus?.[0]?.status || "pending"})
+                        </span>
+                      ) : (
+                        <>
+                          <button
+                            onClick={() => onApprove(pengajuan.usulan_id)}
+                            className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+                            title="Setujui"
+                          >
+                            ✓
+                          </button>
+                          <button
+                            onClick={() => onReject(pengajuan.usulan_id)}
+                            className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                            title="Tolak"
+                          >
+                            ✗
+                          </button>
+                        </>
+                      )}
                     </td>
                   </tr>
                 ))
               ) : (
-                // Dummy data sementara
-                <tr className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                  <td className="px-6 py-4 text-sm text-gray-900 dark:text-white">
-                    John Doe
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-900 dark:text-white">
-                    123456789
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-900 dark:text-white">
-                    john@email.com
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-900 dark:text-white">
-                    Staff
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-900 dark:text-white">
-                    BKPSDM
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-900 dark:text-white">
-                    TB
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-900 dark:text-white">
-                    25/12/2024
-                  </td>
-                  <td className="px-6 py-4 text-sm space-x-2">
-                    <button
-                      onClick={() => onApprove(1)}
-                      className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
-                      title="Setujui"
-                    >
-                      ✓
-                    </button>
-                    <button
-                      onClick={() => onReject(1)}
-                      className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
-                      title="Tolak"
-                    >
-                      ✗
-                    </button>
+                <tr>
+                  <td
+                    colSpan="8"
+                    className="px-6 py-4 text-center text-sm text-gray-600 dark:text-gray-400"
+                  >
+                    Belum ada pengajuan yang masuk
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
-        </div>
-      )}
-
-      {/* Empty state */}
-      {pengajuans.length === 0 && !loading && (
-        <div className="text-center py-8">
-          <p className="text-gray-600 dark:text-gray-400">
-            Belum ada pengajuan yang masuk
-          </p>
         </div>
       )}
     </div>
