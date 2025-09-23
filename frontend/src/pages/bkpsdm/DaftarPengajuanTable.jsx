@@ -66,6 +66,9 @@ const DaftarPengajuanTable = ({ pengajuans, loading, onApprove, onReject }) => {
                   Tanggal
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  Dokumen
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                   Action
                 </th>
               </tr>
@@ -97,6 +100,23 @@ const DaftarPengajuanTable = ({ pengajuans, loading, onApprove, onReject }) => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                       {formatDate(pengajuan.tanggal_pengajuan)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                      {pengajuan.dokumenSyarat &&
+                      pengajuan.dokumenSyarat.length > 0 ? (
+                        <a
+                          href={`http://localhost:3000/${pengajuan.dokumenSyarat[0].path_file}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 dark:text-blue-400 hover:underline"
+                        >
+                          Lihat Dokumen
+                        </a>
+                      ) : (
+                        <span className="text-gray-500 dark:text-gray-400">
+                          Tidak ada dokumen
+                        </span>
+                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
                       {isProcessed(pengajuan.riwayatStatus?.[0]?.status) ? (
@@ -132,7 +152,7 @@ const DaftarPengajuanTable = ({ pengajuans, loading, onApprove, onReject }) => {
               ) : (
                 <tr>
                   <td
-                    colSpan="8"
+                    colSpan="9"
                     className="px-6 py-4 text-center text-sm text-gray-600 dark:text-gray-400"
                   >
                     Belum ada pengajuan yang masuk

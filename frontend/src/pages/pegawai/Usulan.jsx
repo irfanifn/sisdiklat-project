@@ -47,24 +47,23 @@ function Usulan() {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await axios.post(
-        `${baseUrl}/api/usulan`,
-        {
-          jenisUsulan: formData.jenisUsulan,
-          tanggalPengajuan: formData.tanggalPengajuan,
+      // Buat FormData untuk mengirim data dan file
+      const formDataToSend = new FormData();
+      formDataToSend.append("jenisUsulan", formData.jenisUsulan);
+      formDataToSend.append("tanggalPengajuan", formData.tanggalPengajuan);
+      formDataToSend.append("dokumenSyarat", formData.dokumen); // Nama field sesuai dengan multer di backend
+
+      const res = await axios.post(`${baseUrl}/api/usulan`, formDataToSend, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      });
 
       if (res.data.success) {
         setMessage({
           type: "success",
-          text: "Usulan berhasil disubmit! Silahkan cek status di menu Riwayat Status",
+          text: "Usulan dan dokumen berhasil disubmit! Silahkan cek status di menu Riwayat Status",
         });
 
         setFormData({
@@ -72,11 +71,15 @@ function Usulan() {
           tanggalPengajuan: "",
           dokumen: null,
         });
+
+        // Reset input file
+        document.querySelector('input[name="dokumen"]').value = "";
       }
     } catch (err) {
       setMessage({
         type: "error",
-        text: err.res?.data?.message || "Terjadi kesalahan saaat submit usulan",
+        text:
+          err.response?.data?.message || "Terjadi kesalahan saat submit usulan",
       });
     } finally {
       setLoading(false);
@@ -179,9 +182,14 @@ function Usulan() {
                   <div className="pt-4">
                     <button
                       type="submit"
-                      className="w-full px-4 py-2 text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                      disabled={loading}
+                      className={`w-full px-4 py-2 text-sm font-medium rounded-md shadow-sm text-white ${
+                        loading
+                          ? "bg-blue-400 cursor-not-allowed"
+                          : "bg-blue-600 hover:bg-blue-700"
+                      } transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2`}
                     >
-                      Submit Usulan
+                      {loading ? "Submitting..." : "Submit Usulan"}
                     </button>
                   </div>
                 </form>

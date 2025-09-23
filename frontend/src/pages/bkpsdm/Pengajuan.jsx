@@ -125,7 +125,7 @@ function Pengajuan() {
 
           {/* Main Content */}
           <div className="flex-1 overflow-auto p-6">
-            <div className="max-w-7xl mx-auto space-y-6">
+            <div className="max-w-max mx-auto space-y-6">
               <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
                 Kelola Pengajuan
               </h1>
