@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import axios from "axios";
 import { baseUrl } from "../../configs/constant";
 
-const DaftarPengajuanTable = ({ pengajuans, loading }) => {
+const DaftarPengajuanTable = ({ pengajuans, loading, onActionComplete }) => {
   // State untuk modal
-  const [modalType, setModalType] = useState(null); // 'approve' atau 'reject'
+  const [modalType, setModalType] = useState(null);
   const [selectedUsulanId, setSelectedUsulanId] = useState(null);
   const [catatan, setCatatan] = useState("");
   const [modalLoading, setModalLoading] = useState(false);
@@ -15,7 +15,7 @@ const DaftarPengajuanTable = ({ pengajuans, loading }) => {
     return new Date(dateString).toLocaleDateString("id-ID");
   };
 
-  // Function untuk styling status
+  // Styling status
   const getStatusStyle = (status) => {
     switch (status?.toLowerCase()) {
       case "disetujui":
@@ -28,7 +28,7 @@ const DaftarPengajuanTable = ({ pengajuans, loading }) => {
     }
   };
 
-  // Function untuk cek apakah usulan sudah diproses
+  // Cek apakah usulan sudah diproses
   const isProcessed = (status) => {
     return (
       status?.toLowerCase() === "disetujui" ||
@@ -36,7 +36,7 @@ const DaftarPengajuanTable = ({ pengajuans, loading }) => {
     );
   };
 
-  // Function untuk membuka modal
+  // Buka modal
   const openModal = (type, usulanId) => {
     setModalType(type);
     setSelectedUsulanId(usulanId);
@@ -44,15 +44,16 @@ const DaftarPengajuanTable = ({ pengajuans, loading }) => {
     setModalMessage({ type: "", text: "" });
   };
 
-  // Function untuk menutup modal
+  // Tutup modal
   const closeModal = () => {
     setModalType(null);
     setSelectedUsulanId(null);
     setCatatan("");
     setModalMessage({ type: "", text: "" });
+    onActionComplete(); // Trigger refresh data di parent
   };
 
-  // Function untuk handle approve
+  // Handle approve
   const handleApprove = async () => {
     setModalLoading(true);
     setModalMessage({ type: "", text: "" });
@@ -72,7 +73,7 @@ const DaftarPengajuanTable = ({ pengajuans, loading }) => {
           type: "success",
           text: "Usulan berhasil disetujui!",
         });
-        setTimeout(closeModal, 1500); // Tutup modal setelah 1.5 detik
+        setTimeout(closeModal, 1500);
       }
     } catch (err) {
       setModalMessage({
@@ -84,7 +85,7 @@ const DaftarPengajuanTable = ({ pengajuans, loading }) => {
     }
   };
 
-  // Function untuk handle reject
+  // Handle reject
   const handleReject = async () => {
     if (!catatan.trim()) {
       setModalMessage({
@@ -112,7 +113,7 @@ const DaftarPengajuanTable = ({ pengajuans, loading }) => {
           type: "success",
           text: "Usulan berhasil ditolak!",
         });
-        setTimeout(closeModal, 1500); // Tutup modal setelah 1.5 detik
+        setTimeout(closeModal, 1500);
       }
     } catch (err) {
       setModalMessage({
@@ -267,7 +268,7 @@ const DaftarPengajuanTable = ({ pengajuans, loading }) => {
 
       {/* Modal untuk Approve/Reject */}
       {modalType && (
-        <div className="fixed inset-0 bg-blend-color bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-30 dark:bg-gray-900 dark:bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 max-w-md w-full">
             <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
               {modalType === "approve"
