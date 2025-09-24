@@ -94,90 +94,106 @@ const createUsulan = async (req, res) => {
 };
 
 const getUserUsulans = async (req, res) => {
-  const user_id = req.user.user_id;
-
-  // Ambil query parameters
-  const {
-    status,
-    search,
-    page = 1,
-    limit = 10,
-    startDate,
-    endDate,
-  } = req.query;
-
   try {
-    // Build where clause
-    const whereClause = {
-      user_id: parseInt(user_id),
-    };
+    const {
+      status,
+      startDate,
+      endDate,
+      search,
+      page = 1,
+      limit = 10,
+    } = req.query;
+    const userId = req.user.user_id; // Ambil user_id dari token
+    const pageNum = isNaN(parseInt(page)) ? 1 : parseInt(page);
+    const limitNum = isNaN(parseInt(limit)) ? 10 : parseInt(limit);
+    const skip = (pageNum - 1) * limitNum >= 0 ? (pageNum - 1) * limitNum : 0;
 
-    // Filter by tanggal
-    if (startDate || endDate) {
-      whereClause.tanggal_pengajuan = {};
-      if (startDate) {
-        whereClause.tanggal_pengajuan.gte = new Date(startDate);
-      }
-      if (endDate) {
-        whereClause.tanggal_pengajuan.lte = new Date(endDate);
-      }
-    }
-
-    // Filter by jenis usulan (search)
-    if (search && search.trim()) {
-      whereClause.jenis_usulan = {
-        contains: search.trim(),
-      };
-    }
-
-    // Untuk pagination
-    const pageNumber = parseInt(page);
-    const pageSize = parseInt(limit);
-    const skip = (pageNumber - 1) * pageSize;
-
-    // Query usulan dengan filter
-    const usulans = await prisma.usulan.findMany({
-      where: whereClause,
-      include: {
-        dokumenSyarat: true,
-        riwayatStatus: {
-          orderBy: { tanggal_perubahan: "desc" },
-          take: 1, // Ambil status terbaru saja
-        },
-      },
-      orderBy: { tanggal_pengajuan: "desc" },
-      skip: skip,
-      take: pageSize,
-    });
-
-    // Filter by status (dilakukan setelah query karena status ada di riwayatStatus)
-    let filteredUsulans = usulans;
-    if (status && status.trim()) {
-      filteredUsulans = usulans.filter((usulan) => {
-        const currentStatus = usulan.riwayatStatus?.[0]?.status || "pending";
-        return currentStatus.toLowerCase() === status.toLowerCase();
+    if (pageNum < 1 || limitNum < 1) {
+      return res.status(400).json({
+        success: false,
+        message: "Parameter page dan limit harus lebih besar dari 0",
       });
     }
 
-    // Count total untuk pagination
-    const totalCount = await prisma.usulan.count({
-      where: whereClause,
+    const where = {
+      user_id: parseInt(userId), // Hanya ambil usulan milik pengguna yang login
+    };
+
+    if (status) {
+      where.riwayatStatus = {
+        some: {
+          status: {
+            equals: status.toLowerCase(),
+          },
+        },
+      };
+    }
+
+    if (startDate || endDate) {
+      where.tanggal_pengajuan = {};
+      if (startDate) {
+        where.tanggal_pengajuan.gte = new Date(startDate);
+      }
+      if (endDate) {
+        where.tanggal_pengajuan.lte = new Date(endDate);
+      }
+    }
+
+    if (search) {
+      const searchLower = search.toLowerCase();
+      where.jenis_usulan = {
+        contains: searchLower,
+      };
+    }
+
+    console.log("Query params:", {
+      status,
+      startDate,
+      endDate,
+      search,
+      page,
+      limit,
+    });
+    console.log("Where clause:", where);
+
+    // Hitung total data untuk pagination
+    const totalItems = await prisma.usulan.count({ where });
+
+    // Ambil data usulan dengan filter, pagination, dan relasi
+    const usulans = await prisma.usulan.findMany({
+      where,
+      include: {
+        dokumenSyarat: {
+          select: {
+            dok_id: true,
+            nama_file: true,
+            path_file: true,
+            status_verifikasi: true,
+          },
+        },
+        riwayatStatus: {
+          orderBy: { tanggal_perubahan: "desc" },
+          take: 1,
+        },
+      },
+      orderBy: { tanggal_pengajuan: "desc" },
+      skip,
+      take: limitNum,
     });
 
-    // Response dengan metadata pagination
     res.status(200).json({
       success: true,
-      data: filteredUsulans,
+      data: usulans,
       pagination: {
-        page: pageNumber,
-        limit: pageSize,
-        total: totalCount,
-        totalPages: Math.ceil(totalCount / pageSize),
+        currentPage: pageNum,
+        totalPages: Math.ceil(totalItems / limitNum),
+        totalItems,
+        limit: limitNum,
       },
       message: "Data usulan berhasil diambil",
     });
   } catch (err) {
-    console.error("Error getting usulans:", err);
+    console.error("Error getting user usulans:", err);
     res.status(500).json({
       success: false,
       data: null,

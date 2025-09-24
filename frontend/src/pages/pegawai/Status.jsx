@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import Header from "../../components/Header";
+import Filter from "../../components/Filter";
+import Pagination from "../../components/Pagination";
 import axios from "axios";
 import { baseUrl } from "../../configs/constant";
 
@@ -9,21 +11,50 @@ function Status() {
   const [usulan, setUsulan] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [filters, setFilters] = useState({
+    status: "",
+    search: "",
+    startDate: "",
+    endDate: "",
+    page: 1,
+    limit: 10,
+  });
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalItems: 0,
+    limit: 10,
+  });
 
   // Fetch data usulan user
   const fetchUsulan = async () => {
     try {
+      setLoading(true);
       const token = localStorage.getItem("token");
+      console.log("Fetching usulan with params:", filters);
       const response = await axios.get(`${baseUrl}/api/usulan`, {
         headers: {
           Authorization: `Bearer ${token}`,
+        },
+        params: {
+          ...filters,
+          page: filters.page || 1,
+          limit: filters.limit || 10,
         },
       });
 
       if (response.data.success) {
         setUsulan(response.data.data);
+        setPagination({
+          currentPage: response.data.pagination.currentPage,
+          totalPages: response.data.pagination.totalPages,
+          totalItems: response.data.pagination.totalItems,
+          limit: response.data.pagination.limit,
+        });
+        setError("");
       }
     } catch (err) {
+      console.error("Error fetching usulan:", err);
       setError(err.response?.data?.message || "Gagal memuat data usulan");
     } finally {
       setLoading(false);
@@ -32,23 +63,34 @@ function Status() {
 
   useEffect(() => {
     fetchUsulan();
-  }, []);
+  }, [filters]);
 
-  // Function untuk format tanggal
+  // Handle filter change
+  const handleFilterChange = (newFilters) => {
+    console.log("New filters:", newFilters);
+    setFilters(newFilters);
+  };
+
+  // Handle page change
+  const handlePageChange = (newPage) => {
+    setFilters((prev) => ({ ...prev, page: newPage }));
+  };
+
+  // Format tanggal
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("id-ID");
   };
 
-  // Function untuk styling status
+  // Styling status
   const getStatusStyle = (status) => {
     switch (status?.toLowerCase()) {
       case "disetujui":
-        return "bg-green-100 text-green-800";
+        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200";
       case "ditolak":
-        return "bg-red-100 text-red-800";
+        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200";
       case "pending":
       default:
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200";
     }
   };
 
@@ -61,29 +103,34 @@ function Status() {
 
           {/* Main Content */}
           <div className="flex-1 overflow-auto p-6">
-            <div className="max-w-6xl mx-auto">
+            <div className="max-w-6xl mx-auto space-y-6">
               <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-3">
                 Riwayat Status Usulan
               </h1>
 
-              {/* Loading State */}
-              {loading && (
-                <div className="text-center py-8">
-                  <p className="text-gray-600 dark:text-gray-400">
-                    Memuat data...
-                  </p>
-                </div>
-              )}
+              {/* Filter */}
+              <Filter
+                onFilterChange={handleFilterChange}
+                showUserSearch={false} // Tidak perlu search nama/NIP karena ini halaman pegawai
+                placeholder="Cari Jenis Usulan"
+                initialFilters={filters}
+              />
 
               {/* Error State */}
               {error && (
-                <div className="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-200 px-4 py-3 rounded-lg mb-6">
+                <div className="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-200 px-4 py-3 rounded-lg">
                   {error}
                 </div>
               )}
 
               {/* Table */}
-              {!loading && !error && (
+              {loading ? (
+                <div className="text-center py-8">
+                  <p className="text-gray-600 dark:text-gray-400">
+                    Memuat data...
+                  </p>
+                </div>
+              ) : (
                 <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
                   {usulan.length === 0 ? (
                     <div className="text-center py-8">
@@ -176,6 +223,15 @@ function Status() {
                           </p>
                         )}
                       </div>
+
+                      {/* Pagination */}
+                      <Pagination
+                        currentPage={pagination.currentPage}
+                        totalPages={pagination.totalPages}
+                        totalItems={pagination.totalItems}
+                        itemsPerPage={pagination.limit}
+                        onPageChange={handlePageChange}
+                      />
                     </>
                   )}
                 </div>
