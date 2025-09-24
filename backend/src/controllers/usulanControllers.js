@@ -96,9 +96,48 @@ const createUsulan = async (req, res) => {
 const getUserUsulans = async (req, res) => {
   const user_id = req.user.user_id;
 
+  // Ambil query parameters
+  const {
+    status,
+    search,
+    page = 1,
+    limit = 10,
+    startDate,
+    endDate,
+  } = req.query;
+
   try {
+    // Build where clause
+    const whereClause = {
+      user_id: parseInt(user_id),
+    };
+
+    // Filter by tanggal
+    if (startDate || endDate) {
+      whereClause.tanggal_pengajuan = {};
+      if (startDate) {
+        whereClause.tanggal_pengajuan.gte = new Date(startDate);
+      }
+      if (endDate) {
+        whereClause.tanggal_pengajuan.lte = new Date(endDate);
+      }
+    }
+
+    // Filter by jenis usulan (search)
+    if (search && search.trim()) {
+      whereClause.jenis_usulan = {
+        contains: search.trim(),
+      };
+    }
+
+    // Untuk pagination
+    const pageNumber = parseInt(page);
+    const pageSize = parseInt(limit);
+    const skip = (pageNumber - 1) * pageSize;
+
+    // Query usulan dengan filter
     const usulans = await prisma.usulan.findMany({
-      where: { user_id: parseInt(user_id) },
+      where: whereClause,
       include: {
         dokumenSyarat: true,
         riwayatStatus: {
@@ -107,11 +146,34 @@ const getUserUsulans = async (req, res) => {
         },
       },
       orderBy: { tanggal_pengajuan: "desc" },
+      skip: skip,
+      take: pageSize,
     });
 
+    // Filter by status (dilakukan setelah query karena status ada di riwayatStatus)
+    let filteredUsulans = usulans;
+    if (status && status.trim()) {
+      filteredUsulans = usulans.filter((usulan) => {
+        const currentStatus = usulan.riwayatStatus?.[0]?.status || "pending";
+        return currentStatus.toLowerCase() === status.toLowerCase();
+      });
+    }
+
+    // Count total untuk pagination
+    const totalCount = await prisma.usulan.count({
+      where: whereClause,
+    });
+
+    // Response dengan metadata pagination
     res.status(200).json({
       success: true,
-      data: usulans,
+      data: filteredUsulans,
+      pagination: {
+        page: pageNumber,
+        limit: pageSize,
+        total: totalCount,
+        totalPages: Math.ceil(totalCount / pageSize),
+      },
       message: "Data usulan berhasil diambil",
     });
   } catch (err) {
