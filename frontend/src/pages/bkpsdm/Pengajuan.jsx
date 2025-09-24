@@ -5,6 +5,8 @@ import Header from "../../components/Header";
 import JenisUsulanCard from "./JenisUsulanCard";
 import SyaratDokumenCard from "./SyaratDokumenCard";
 import DaftarPengajuanTable from "./DaftarPengajuanTable";
+import Filter from "../../components/Filter.jsx";
+import Pagination from "../../components/Pagination.jsx";
 import { baseUrl } from "../../configs/constant.js";
 
 function Pengajuan() {
@@ -12,6 +14,20 @@ function Pengajuan() {
   const [pengajuans, setPengajuans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [filters, setFilters] = useState({
+    status: "",
+    search: "",
+    startDate: "",
+    endDate: "",
+    page: 1,
+    limit: 10,
+  });
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalItems: 0,
+    limit: 10,
+  });
 
   // State untuk data yang bisa diedit (hardcode dulu)
   const [jenisUsulanData, setJenisUsulanData] = useState(["TB", "IB"]);
@@ -22,15 +38,23 @@ function Pengajuan() {
   // Fetch semua pengajuan
   const fetchPengajuans = async () => {
     try {
+      setLoading(true);
       const token = localStorage.getItem("token");
       const response = await axios.get(`${baseUrl}/api/bkpsdm/pengajuan`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        params: filters,
       });
 
       if (response.data.success) {
         setPengajuans(response.data.data);
+        setPagination({
+          currentPage: response.data.pagination.currentPage,
+          totalPages: response.data.pagination.totalPages,
+          totalItems: response.data.pagination.totalItems,
+          limit: response.data.pagination.limit,
+        });
         setError("");
       }
     } catch (err) {
@@ -41,79 +65,24 @@ function Pengajuan() {
     }
   };
 
+  // Fetch data saat filters berubah
   useEffect(() => {
     fetchPengajuans();
-  }, []);
+  }, [filters]);
 
-  // Handle approve usulan
-  const handleApprove = async (usulanId) => {
-    if (
-      confirm("Yakin sudah memeriksa dokumen dan akan menyetujui usulan ini?")
-    ) {
-      setPengajuans((prev) =>
-        prev.map((p) =>
-          p.usulan_id === usulanId
-            ? { ...p, riwayatStatus: [{ status: "disetujui" }] }
-            : p
-        )
-      );
-
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.put(
-          `${baseUrl}/api/bkpsdm/pengajuan/${usulanId}/approve`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (response.data.success) {
-          alert("Usulan berhasil disetujui!");
-        }
-      } catch (err) {
-        console.error("Error approve:", err);
-        alert(err.response?.data?.message || "Gagal menyetujui usulan");
-        fetchPengajuans();
-      }
-    }
+  // Handle filter change dari Filter.jsx
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
   };
 
-  // Handle reject usulan
-  const handleReject = async (usulanId) => {
-    const catatan = prompt("Masukkan alasan penolakan:");
-    if (catatan && catatan.trim()) {
-      setPengajuans((prev) =>
-        prev.map((p) =>
-          p.usulan_id === usulanId
-            ? { ...p, riwayatStatus: [{ status: "ditolak" }] }
-            : p
-        )
-      );
+  // Handle page change dari Pagination.jsx
+  const handlePageChange = (newPage) => {
+    setFilters((prev) => ({ ...prev, page: newPage }));
+  };
 
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.put(
-          `${baseUrl}/api/bkpsdm/pengajuan/${usulanId}/reject`,
-          { catatan: catatan.trim() },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (response.data.success) {
-          alert("Usulan berhasil ditolak!");
-        }
-      } catch (err) {
-        console.error("Error reject:", err);
-        alert(err.response?.data?.message || "Gagal menolak usulan");
-        fetchPengajuans();
-      }
-    }
+  // Handle action complete (approve/reject) untuk refresh data
+  const handleActionComplete = () => {
+    fetchPengajuans();
   };
 
   return (
@@ -137,13 +106,20 @@ function Pengajuan() {
                 </div>
               )}
 
+              {/* Filter */}
+              <Filter
+                onFilterChange={handleFilterChange}
+                showUserSearch={true}
+                placeholder="Cari Nama/NIP/Jenis Usulan"
+                initialFilters={filters}
+              />
+
               {/* Card Section */}
               <div className="grid gap-6">
                 {/* <JenisUsulanCard
                   jenisUsulanData={jenisUsulanData}
                   setJenisUsulanData={setJenisUsulanData}
                 /> */}
-
                 <SyaratDokumenCard
                   syaratDokumenData={syaratDokumenData}
                   setSyaratDokumenData={setSyaratDokumenData}
@@ -154,8 +130,16 @@ function Pengajuan() {
               <DaftarPengajuanTable
                 pengajuans={pengajuans}
                 loading={loading}
-                onApprove={handleApprove}
-                onReject={handleReject}
+                onActionComplete={handleActionComplete}
+              />
+
+              {/* Pagination */}
+              <Pagination
+                currentPage={pagination.currentPage}
+                totalPages={pagination.totalPages}
+                totalItems={pagination.totalItems}
+                itemsPerPage={pagination.limit}
+                onPageChange={handlePageChange}
               />
             </div>
           </div>

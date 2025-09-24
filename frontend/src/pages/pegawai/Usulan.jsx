@@ -95,7 +95,7 @@ function Usulan() {
 
           {/* Main Content */}
           <div className="flex-1 overflow-auto p-6">
-            <div className="max-w-2xl mx-auto">
+            <div className="max-w-5xl mx-auto">
               <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-3">
                 Form Usulan
               </h1>
