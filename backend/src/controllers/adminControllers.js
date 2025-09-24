@@ -23,12 +23,12 @@ const getAllPengajuan = async (req, res) => {
 
     const where = {};
 
+    // Filter by status (tanpa mode: "insensitive", gunakan contains atau transform status)
     if (status) {
       where.riwayatStatus = {
         some: {
           status: {
-            equals: status,
-            mode: "insensitive",
+            equals: status.toLowerCase(), // Pastikan status dalam lowercase
           },
         },
       };
@@ -52,8 +52,10 @@ const getAllPengajuan = async (req, res) => {
       ];
     }
 
+    // Ambil total data untuk pagination
     const totalItems = await prisma.usulan.count({ where });
 
+    // Ambil data dengan filter, pagination, dan include relasi
     const pengajuans = await prisma.usulan.findMany({
       where,
       include: {
@@ -108,7 +110,6 @@ const getAllPengajuan = async (req, res) => {
 
 const getAllRiwayatStatus = async (req, res) => {
   try {
-    // Ambil query parameters dengan validasi
     const {
       status,
       startDate,
@@ -121,7 +122,6 @@ const getAllRiwayatStatus = async (req, res) => {
     const limitNum = isNaN(parseInt(limit)) ? 10 : parseInt(limit);
     const skip = (pageNum - 1) * limitNum >= 0 ? (pageNum - 1) * limitNum : 0;
 
-    // Validasi page dan limit
     if (pageNum < 1 || limitNum < 1) {
       return res.status(400).json({
         success: false,
@@ -129,18 +129,14 @@ const getAllRiwayatStatus = async (req, res) => {
       });
     }
 
-    // Bangun kondisi where untuk filter
     const where = {};
 
-    // Filter by status
     if (status) {
       where.status = {
-        equals: status,
-        mode: "insensitive",
+        equals: status.toLowerCase(), // Pastikan status dalam lowercase
       };
     }
 
-    // Filter by tanggal perubahan
     if (startDate || endDate) {
       where.tanggal_perubahan = {};
       if (startDate) {
@@ -151,7 +147,6 @@ const getAllRiwayatStatus = async (req, res) => {
       }
     }
 
-    // Search by nama, NIP, atau jenis usulan
     if (search) {
       where.OR = [
         {
@@ -164,10 +159,8 @@ const getAllRiwayatStatus = async (req, res) => {
       ];
     }
 
-    // Ambil total data untuk pagination
     const totalItems = await prisma.riwayatStatus.count({ where });
 
-    // Ambil data dengan filter, pagination, dan include relasi
     const riwayatStatus = await prisma.riwayatStatus.findMany({
       where,
       include: {
