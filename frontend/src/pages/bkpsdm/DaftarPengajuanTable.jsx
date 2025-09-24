@@ -1,6 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
+import { baseUrl } from "../../configs/constant";
 
-const DaftarPengajuanTable = ({ pengajuans, loading, onApprove, onReject }) => {
+const DaftarPengajuanTable = ({ pengajuans, loading }) => {
+  // State untuk modal
+  const [modalType, setModalType] = useState(null); // 'approve' atau 'reject'
+  const [selectedUsulanId, setSelectedUsulanId] = useState(null);
+  const [catatan, setCatatan] = useState("");
+  const [modalLoading, setModalLoading] = useState(false);
+  const [modalMessage, setModalMessage] = useState({ type: "", text: "" });
+
   // Format tanggal
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("id-ID");
@@ -25,6 +34,94 @@ const DaftarPengajuanTable = ({ pengajuans, loading, onApprove, onReject }) => {
       status?.toLowerCase() === "disetujui" ||
       status?.toLowerCase() === "ditolak"
     );
+  };
+
+  // Function untuk membuka modal
+  const openModal = (type, usulanId) => {
+    setModalType(type);
+    setSelectedUsulanId(usulanId);
+    setCatatan("");
+    setModalMessage({ type: "", text: "" });
+  };
+
+  // Function untuk menutup modal
+  const closeModal = () => {
+    setModalType(null);
+    setSelectedUsulanId(null);
+    setCatatan("");
+    setModalMessage({ type: "", text: "" });
+  };
+
+  // Function untuk handle approve
+  const handleApprove = async () => {
+    setModalLoading(true);
+    setModalMessage({ type: "", text: "" });
+
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.put(
+        `${baseUrl}/api/bkpsdm/pengajuan/${selectedUsulanId}/approve`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (res.data.success) {
+        setModalMessage({
+          type: "success",
+          text: "Usulan berhasil disetujui!",
+        });
+        setTimeout(closeModal, 1500); // Tutup modal setelah 1.5 detik
+      }
+    } catch (err) {
+      setModalMessage({
+        type: "error",
+        text: err.response?.data?.message || "Gagal menyetujui usulan",
+      });
+    } finally {
+      setModalLoading(false);
+    }
+  };
+
+  // Function untuk handle reject
+  const handleReject = async () => {
+    if (!catatan.trim()) {
+      setModalMessage({
+        type: "error",
+        text: "Catatan penolakan wajib diisi",
+      });
+      return;
+    }
+
+    setModalLoading(true);
+    setModalMessage({ type: "", text: "" });
+
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.put(
+        `${baseUrl}/api/bkpsdm/pengajuan/${selectedUsulanId}/reject`,
+        { catatan },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (res.data.success) {
+        setModalMessage({
+          type: "success",
+          text: "Usulan berhasil ditolak!",
+        });
+        setTimeout(closeModal, 1500); // Tutup modal setelah 1.5 detik
+      }
+    } catch (err) {
+      setModalMessage({
+        type: "error",
+        text: err.response?.data?.message || "Gagal menolak usulan",
+      });
+    } finally {
+      setModalLoading(false);
+    }
   };
 
   return (
@@ -105,7 +202,7 @@ const DaftarPengajuanTable = ({ pengajuans, loading, onApprove, onReject }) => {
                       {pengajuan.dokumenSyarat &&
                       pengajuan.dokumenSyarat.length > 0 ? (
                         <a
-                          href={`http://localhost:3000/${pengajuan.dokumenSyarat[0].path_file}`}
+                          href={`${baseUrl}/${pengajuan.dokumenSyarat[0].path_file}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-blue-600 dark:text-blue-400 hover:underline"
@@ -131,14 +228,18 @@ const DaftarPengajuanTable = ({ pengajuans, loading, onApprove, onReject }) => {
                       ) : (
                         <>
                           <button
-                            onClick={() => onApprove(pengajuan.usulan_id)}
+                            onClick={() =>
+                              openModal("approve", pengajuan.usulan_id)
+                            }
                             className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
                             title="Setujui"
                           >
                             ✓
                           </button>
                           <button
-                            onClick={() => onReject(pengajuan.usulan_id)}
+                            onClick={() =>
+                              openModal("reject", pengajuan.usulan_id)
+                            }
                             className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
                             title="Tolak"
                           >
@@ -161,6 +262,78 @@ const DaftarPengajuanTable = ({ pengajuans, loading, onApprove, onReject }) => {
               )}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Modal untuk Approve/Reject */}
+      {modalType && (
+        <div className="fixed inset-0 bg-blend-color bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 max-w-md w-full">
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
+              {modalType === "approve"
+                ? "Konfirmasi Persetujuan"
+                : "Konfirmasi Penolakan"}
+            </h3>
+
+            {modalMessage.text && (
+              <div
+                className={`mb-4 p-3 rounded-md ${
+                  modalMessage.type === "success"
+                    ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                    : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                }`}
+              >
+                {modalMessage.text}
+              </div>
+            )}
+
+            {modalType === "approve" ? (
+              <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+                Apakah Anda yakin ingin menyetujui usulan ini?
+              </p>
+            ) : (
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-800 dark:text-white mb-2">
+                  Catatan Penolakan
+                </label>
+                <textarea
+                  value={catatan}
+                  onChange={(e) => setCatatan(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  rows="4"
+                  placeholder="Masukkan alasan penolakan..."
+                  required
+                />
+              </div>
+            )}
+
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={closeModal}
+                className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 bg-gray-200 dark:bg-gray-600 rounded hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors"
+                disabled={modalLoading}
+              >
+                Batal
+              </button>
+              <button
+                onClick={modalType === "approve" ? handleApprove : handleReject}
+                className={`px-4 py-2 text-sm font-medium text-white rounded transition-colors ${
+                  modalLoading
+                    ? "bg-blue-400 cursor-not-allowed"
+                    : modalType === "approve"
+                    ? "bg-green-600 hover:bg-green-700"
+                    : "bg-red-600 hover:bg-red-700"
+                }`}
+                disabled={modalLoading}
+              >
+                {modalLoading
+                  ? "Memproses..."
+                  : modalType === "approve"
+                  ? "Setujui"
+                  : "Tolak"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
