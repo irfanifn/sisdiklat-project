@@ -23,12 +23,11 @@ const getAllPengajuan = async (req, res) => {
 
     const where = {};
 
-    // Filter by status (tanpa mode: "insensitive", gunakan contains atau transform status)
     if (status) {
       where.riwayatStatus = {
         some: {
           status: {
-            equals: status.toLowerCase(), // Pastikan status dalam lowercase
+            equals: status.toLowerCase(),
           },
         },
       };
@@ -45,17 +44,16 @@ const getAllPengajuan = async (req, res) => {
     }
 
     if (search) {
+      const searchLower = search.toLowerCase();
       where.OR = [
-        { user: { nama: { contains: search, mode: "insensitive" } } },
-        { user: { nip: { contains: search, mode: "insensitive" } } },
-        { jenis_usulan: { contains: search, mode: "insensitive" } },
+        { user: { nama: { contains: searchLower } } },
+        { user: { nip: { contains: searchLower } } },
+        { jenis_usulan: { contains: searchLower } },
       ];
     }
 
-    // Ambil total data untuk pagination
     const totalItems = await prisma.usulan.count({ where });
 
-    // Ambil data dengan filter, pagination, dan include relasi
     const pengajuans = await prisma.usulan.findMany({
       where,
       include: {
@@ -133,7 +131,7 @@ const getAllRiwayatStatus = async (req, res) => {
 
     if (status) {
       where.status = {
-        equals: status.toLowerCase(), // Pastikan status dalam lowercase
+        equals: status.toLowerCase(),
       };
     }
 
@@ -148,14 +146,11 @@ const getAllRiwayatStatus = async (req, res) => {
     }
 
     if (search) {
+      const searchLower = search.toLowerCase();
       where.OR = [
-        {
-          usulan: { user: { nama: { contains: search, mode: "insensitive" } } },
-        },
-        {
-          usulan: { user: { nip: { contains: search, mode: "insensitive" } } },
-        },
-        { usulan: { jenis_usulan: { contains: search, mode: "insensitive" } } },
+        { usulan: { user: { nama: { contains: searchLower } } } },
+        { usulan: { user: { nip: { contains: searchLower } } } },
+        { usulan: { jenis_usulan: { contains: searchLower } } },
       ];
     }
 
