@@ -2,56 +2,70 @@ import { prisma } from "../configs/utils.js";
 
 const getAllPengajuan = async (req, res) => {
   try {
-    // Ambil query parameters
+    // Ambil query parameters dengan validasi
     const {
       status,
+      startDate,
+      endDate,
       search,
       page = 1,
       limit = 10,
-      startDate,
-      endDate,
     } = req.query;
 
-    // Build where clause
-    const whereClause = {};
+    // Konversi page dan limit ke integer, dengan fallback jika tidak valid
+    const pageNum = isNaN(parseInt(page)) ? 1 : parseInt(page);
+    const limitNum = isNaN(parseInt(limit)) ? 10 : parseInt(limit);
+    const skip = (pageNum - 1) * limitNum >= 0 ? (pageNum - 1) * limitNum : 0;
+
+    // Validasi page dan limit
+    if (pageNum < 1 || limitNum < 1) {
+      return res.status(400).json({
+        success: false,
+        message: "Parameter page dan limit harus lebih besar dari 0",
+      });
+    }
+
+    // Bangun kondisi where untuk filter
+    const where = {};
+
+    // Filter by status (berdasarkan riwayatStatus terbaru)
+    if (status) {
+      where.riwayatStatus = {
+        some: {
+          status: {
+            equals: status,
+            mode: "insensitive",
+          },
+        },
+      };
+    }
 
     // Filter by tanggal
     if (startDate || endDate) {
-      whereClause.tanggal_pengajuan = {};
+      where.tanggal_pengajuan = {};
       if (startDate) {
-        whereClause.tanggal_pengajuan.gte = new Date(startDate);
+        where.tanggal_pengajuan.gte = new Date(startDate);
       }
       if (endDate) {
-        whereClause.tanggal_pengajuan.lte = new Date(endDate);
+        where.tanggal_pengajuan.lte = new Date(endDate);
       }
     }
 
-    // Search by nama pegawai, NIP, atau jenis usulan
-    if (search && search.trim()) {
-      whereClause.OR = [
-        // Search di user
-        {
-          user: {
-            OR: [
-              { nama: { contains: search.trim() } },
-              { nip: { contains: search.trim() } },
-              { email: { contains: search.trim() } },
-            ],
-          },
-        },
-        // Search di jenis usulan
-        { jenis_usulan: { contains: search.trim() } },
+    // Search by nama, NIP, atau jenis usulan
+    if (search) {
+      where.OR = [
+        { user: { nama: { contains: search, mode: "insensitive" } } },
+        { user: { nip: { contains: search, mode: "insensitive" } } },
+        { jenis_usulan: { contains: search, mode: "insensitive" } },
       ];
     }
 
-    // Untuk pagination
-    const pageNumber = parseInt(page);
-    const pageSize = parseInt(limit);
-    const skip = (pageNumber - 1) * pageSize;
+    // Ambil total data untuk pagination
+    const totalItems = await prisma.usulan.count({ where });
 
-    // Query pengajuan dengan filter
+    // Ambil data dengan filter, pagination, dan include relasi
     const pengajuans = await prisma.usulan.findMany({
-      where: whereClause,
+      where,
       include: {
         user: {
           select: {
@@ -62,39 +76,32 @@ const getAllPengajuan = async (req, res) => {
             nama_opd: true,
           },
         },
-        dokumenSyarat: true,
+        dokumenSyarat: {
+          select: {
+            dok_id: true,
+            nama_file: true,
+            path_file: true,
+            status_verifikasi: true,
+          },
+        },
         riwayatStatus: {
           orderBy: { tanggal_perubahan: "desc" },
-          take: 1, // Ambil status terbaru saja
+          take: 1,
         },
       },
       orderBy: { tanggal_pengajuan: "desc" },
-      skip: skip,
-      take: pageSize,
+      skip,
+      take: limitNum,
     });
 
-    let filteredPengajuans = pengajuans;
-    if (status && status.trim()) {
-      filteredPengajuans = pengajuans.filter((pengajuan) => {
-        const currentStatus = pengajuan.riwayatStatus?.[0]?.status || "pending";
-        return currentStatus.toLowerCase() === status.toLowerCase();
-      });
-    }
-
-    // Count total untuk pagination
-    const totalCount = await prisma.usulan.count({
-      where: whereClause,
-    });
-
-    // Response dengan metadata pagination
     res.status(200).json({
       success: true,
-      data: filteredPengajuans,
+      data: pengajuans,
       pagination: {
-        page: pageNumber,
-        limit: pageSize,
-        total: totalCount,
-        totalPages: Math.ceil(totalCount / pageSize),
+        totalItems,
+        totalPages: Math.ceil(totalItems / limitNum),
+        currentPage: pageNum,
+        limit: limitNum,
       },
       message: "Data pengajuan berhasil diambil",
     });
@@ -109,67 +116,9 @@ const getAllPengajuan = async (req, res) => {
   }
 };
 
-// GET /api/bkpsdm/status - Get semua riwayat status untuk admin dengan filter
 const getAllRiwayatStatus = async (req, res) => {
   try {
-    // Ambil query parameters
-    const {
-      status,
-      search,
-      page = 1,
-      limit = 10,
-      startDate,
-      endDate,
-    } = req.query;
-
-    // Build where clause untuk riwayatStatus
-    const whereClause = {};
-
-    // Filter by tanggal perubahan
-    if (startDate || endDate) {
-      whereClause.tanggal_perubahan = {};
-      if (startDate) {
-        whereClause.tanggal_perubahan.gte = new Date(startDate);
-      }
-      if (endDate) {
-        whereClause.tanggal_perubahan.lte = new Date(endDate);
-      }
-    }
-
-    // Filter by status
-    if (status && status.trim()) {
-      whereClause.status = {
-        equals: status.trim(),
-      };
-    }
-
-    // Search by nama pegawai, NIP, atau jenis usulan
-    if (search && search.trim()) {
-      whereClause.usulan = {
-        OR: [
-          // Search di user
-          {
-            user: {
-              OR: [
-                { nama: { contains: search.trim() } },
-                { nip: { contains: search.trim() } },
-              ],
-            },
-          },
-          // Search di jenis usulan
-          { jenis_usulan: { contains: search.trim() } },
-        ],
-      };
-    }
-
-    // Untuk pagination
-    const pageNumber = parseInt(page);
-    const pageSize = parseInt(limit);
-    const skip = (pageNumber - 1) * pageSize;
-
-    // Query riwayat status dengan filter
     const riwayatStatus = await prisma.riwayatStatus.findMany({
-      where: whereClause,
       include: {
         usulan: {
           include: {
@@ -183,25 +132,11 @@ const getAllRiwayatStatus = async (req, res) => {
         },
       },
       orderBy: { tanggal_perubahan: "desc" },
-      skip: skip,
-      take: pageSize,
     });
 
-    // Count total untuk pagination
-    const totalCount = await prisma.riwayatStatus.count({
-      where: whereClause,
-    });
-
-    // Response dengan metadata pagination
     res.status(200).json({
       success: true,
       data: riwayatStatus,
-      pagination: {
-        page: pageNumber,
-        limit: pageSize,
-        total: totalCount,
-        totalPages: Math.ceil(totalCount / pageSize),
-      },
       message: "Data riwayat status berhasil diambil",
     });
   } catch (err) {
@@ -217,7 +152,7 @@ const getAllRiwayatStatus = async (req, res) => {
 
 const approvePengajuan = async (req, res) => {
   const { id } = req.params;
-  const adminUserId = req.user.user_id;
+  const UserId = req.user.user_id;
 
   try {
     // Cek apakah usulan ada

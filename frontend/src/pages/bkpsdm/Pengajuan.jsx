@@ -40,11 +40,17 @@ function Pengajuan() {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
+      // Log query params untuk debugging
+      console.log("Fetching pengajuans with params:", filters);
       const response = await axios.get(`${baseUrl}/api/bkpsdm/pengajuan`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        params: filters,
+        params: {
+          ...filters,
+          page: filters.page || 1, // Pastikan page selalu valid
+          limit: filters.limit || 10, // Pastikan limit selalu valid
+        },
       });
 
       if (response.data.success) {
