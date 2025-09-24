@@ -1,8 +1,62 @@
 import { prisma } from "../configs/utils.js";
 
+// GET /api/bkpsdm/pengajuan - Get semua pengajuan untuk admin dengan filter
 const getAllPengajuan = async (req, res) => {
   try {
+    // TODO: Nanti bisa tambah role checking kalau perlu
+    // const userRole = req.user.role;
+    // if (userRole !== 'bkpsdm') { return res.status(403)... }
+
+    // Ambil query parameters
+    const {
+      status,
+      search,
+      page = 1,
+      limit = 10,
+      startDate,
+      endDate,
+    } = req.query;
+
+    // Build where clause
+    const whereClause = {};
+
+    // Filter by tanggal
+    if (startDate || endDate) {
+      whereClause.tanggal_pengajuan = {};
+      if (startDate) {
+        whereClause.tanggal_pengajuan.gte = new Date(startDate);
+      }
+      if (endDate) {
+        whereClause.tanggal_pengajuan.lte = new Date(endDate);
+      }
+    }
+
+    // Search by nama pegawai, NIP, atau jenis usulan
+    if (search && search.trim()) {
+      whereClause.OR = [
+        // Search di user
+        {
+          user: {
+            OR: [
+              { nama: { contains: search.trim() } },
+              { nip: { contains: search.trim() } },
+              { email: { contains: search.trim() } },
+            ],
+          },
+        },
+        // Search di jenis usulan
+        { jenis_usulan: { contains: search.trim() } },
+      ];
+    }
+
+    // Untuk pagination
+    const pageNumber = parseInt(page);
+    const pageSize = parseInt(limit);
+    const skip = (pageNumber - 1) * pageSize;
+
+    // Query pengajuan dengan filter
     const pengajuans = await prisma.usulan.findMany({
+      where: whereClause,
       include: {
         user: {
           select: {
@@ -16,21 +70,44 @@ const getAllPengajuan = async (req, res) => {
         dokumenSyarat: true,
         riwayatStatus: {
           orderBy: { tanggal_perubahan: "desc" },
-          take: 1,
+          take: 1, // Ambil status terbaru saja
         },
       },
       orderBy: { tanggal_pengajuan: "desc" },
+      skip: skip,
+      take: pageSize,
     });
 
+    // Filter by status (dilakukan setelah query karena status ada di riwayatStatus)
+    let filteredPengajuans = pengajuans;
+    if (status && status.trim()) {
+      filteredPengajuans = pengajuans.filter((pengajuan) => {
+        const currentStatus = pengajuan.riwayatStatus?.[0]?.status || "pending";
+        return currentStatus.toLowerCase() === status.toLowerCase();
+      });
+    }
+
+    // Count total untuk pagination
+    const totalCount = await prisma.usulan.count({
+      where: whereClause,
+    });
+
+    // Response dengan metadata pagination
     res.status(200).json({
       success: true,
-      data: pengajuans,
+      data: filteredPengajuans,
+      pagination: {
+        page: pageNumber,
+        limit: pageSize,
+        total: totalCount,
+        totalPages: Math.ceil(totalCount / pageSize),
+      },
       message: "Data pengajuan berhasil diambil",
     });
   } catch (err) {
     console.error("Error getting all pengajuan:", err);
     res.status(500).json({
-      seccess: false,
+      success: false,
       data: null,
       message: err.message,
       status: "Error",
@@ -38,6 +115,7 @@ const getAllPengajuan = async (req, res) => {
   }
 };
 
+// GET /api/admin/status - Get semua riwayat status untuk admin
 const getAllRiwayatStatus = async (req, res) => {
   try {
     const riwayatStatus = await prisma.riwayatStatus.findMany({
@@ -72,9 +150,10 @@ const getAllRiwayatStatus = async (req, res) => {
   }
 };
 
+// PUT /api/admin/pengajuan/:id/approve - Approve usulan
 const approvePengajuan = async (req, res) => {
   const { id } = req.params;
-  const UserId = req.user.user_id;
+  const adminUserId = req.user.user_id;
 
   try {
     // Cek apakah usulan ada
@@ -119,6 +198,7 @@ const approvePengajuan = async (req, res) => {
   }
 };
 
+// PUT /api/admin/pengajuan/:id/reject - Reject usulan dengan catatan
 const rejectPengajuan = async (req, res) => {
   const { id } = req.params;
   const { catatan } = req.body;
