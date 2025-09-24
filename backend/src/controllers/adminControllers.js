@@ -115,10 +115,67 @@ const getAllPengajuan = async (req, res) => {
   }
 };
 
-// GET /api/admin/status - Get semua riwayat status untuk admin
+// GET /api/bkpsdm/status - Get semua riwayat status untuk admin dengan filter
 const getAllRiwayatStatus = async (req, res) => {
   try {
+    // Ambil query parameters
+    const {
+      status,
+      search,
+      page = 1,
+      limit = 10,
+      startDate,
+      endDate,
+    } = req.query;
+
+    // Build where clause untuk riwayatStatus
+    const whereClause = {};
+
+    // Filter by tanggal perubahan
+    if (startDate || endDate) {
+      whereClause.tanggal_perubahan = {};
+      if (startDate) {
+        whereClause.tanggal_perubahan.gte = new Date(startDate);
+      }
+      if (endDate) {
+        whereClause.tanggal_perubahan.lte = new Date(endDate);
+      }
+    }
+
+    // Filter by status
+    if (status && status.trim()) {
+      whereClause.status = {
+        equals: status.trim(),
+      };
+    }
+
+    // Search by nama pegawai, NIP, atau jenis usulan
+    if (search && search.trim()) {
+      whereClause.usulan = {
+        OR: [
+          // Search di user
+          {
+            user: {
+              OR: [
+                { nama: { contains: search.trim() } },
+                { nip: { contains: search.trim() } },
+              ],
+            },
+          },
+          // Search di jenis usulan
+          { jenis_usulan: { contains: search.trim() } },
+        ],
+      };
+    }
+
+    // Untuk pagination
+    const pageNumber = parseInt(page);
+    const pageSize = parseInt(limit);
+    const skip = (pageNumber - 1) * pageSize;
+
+    // Query riwayat status dengan filter
     const riwayatStatus = await prisma.riwayatStatus.findMany({
+      where: whereClause,
       include: {
         usulan: {
           include: {
@@ -132,11 +189,25 @@ const getAllRiwayatStatus = async (req, res) => {
         },
       },
       orderBy: { tanggal_perubahan: "desc" },
+      skip: skip,
+      take: pageSize,
     });
 
+    // Count total untuk pagination
+    const totalCount = await prisma.riwayatStatus.count({
+      where: whereClause,
+    });
+
+    // Response dengan metadata pagination
     res.status(200).json({
       success: true,
       data: riwayatStatus,
+      pagination: {
+        page: pageNumber,
+        limit: pageSize,
+        total: totalCount,
+        totalPages: Math.ceil(totalCount / pageSize),
+      },
       message: "Data riwayat status berhasil diambil",
     });
   } catch (err) {
