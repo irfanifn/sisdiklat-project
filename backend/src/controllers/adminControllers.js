@@ -1,12 +1,7 @@
 import { prisma } from "../configs/utils.js";
 
-// GET /api/bkpsdm/pengajuan - Get semua pengajuan untuk admin dengan filter
 const getAllPengajuan = async (req, res) => {
   try {
-    // TODO: Nanti bisa tambah role checking kalau perlu
-    // const userRole = req.user.role;
-    // if (userRole !== 'bkpsdm') { return res.status(403)... }
-
     // Ambil query parameters
     const {
       status,
@@ -78,7 +73,6 @@ const getAllPengajuan = async (req, res) => {
       take: pageSize,
     });
 
-    // Filter by status (dilakukan setelah query karena status ada di riwayatStatus)
     let filteredPengajuans = pengajuans;
     if (status && status.trim()) {
       filteredPengajuans = pengajuans.filter((pengajuan) => {
@@ -221,7 +215,6 @@ const getAllRiwayatStatus = async (req, res) => {
   }
 };
 
-// PUT /api/admin/pengajuan/:id/approve - Approve usulan
 const approvePengajuan = async (req, res) => {
   const { id } = req.params;
   const adminUserId = req.user.user_id;
@@ -269,7 +262,6 @@ const approvePengajuan = async (req, res) => {
   }
 };
 
-// PUT /api/admin/pengajuan/:id/reject - Reject usulan dengan catatan
 const rejectPengajuan = async (req, res) => {
   const { id } = req.params;
   const { catatan } = req.body;
