@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Sidebar from "../../components/Sidebar";
 import Header from "../../components/Header";
+import Filter from "../../components/Filter.jsx";
+import Pagination from "../../components/Pagination.jsx";
 import { baseUrl } from "../../configs/constant.js";
 
 function AdminStatus() {
@@ -9,87 +11,80 @@ function AdminStatus() {
   const [riwayatData, setRiwayatData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [filters, setFilters] = useState({
+    status: "",
+    search: "",
+    startDate: "",
+    endDate: "",
+    page: 1,
+    limit: 10,
+  });
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalItems: 0,
+    limit: 10,
+  });
 
   // Fetch semua riwayat status
   const fetchRiwayatStatus = async () => {
     try {
+      setLoading(true);
       const token = localStorage.getItem("token");
+      console.log("Fetching riwayat status with params:", filters);
       const response = await axios.get(`${baseUrl}/api/bkpsdm/status`, {
         headers: {
           Authorization: `Bearer ${token}`,
+        },
+        params: {
+          ...filters,
+          page: filters.page || 1,
+          limit: filters.limit || 10,
         },
       });
 
       if (response.data.success) {
         setRiwayatData(response.data.data);
+        setPagination({
+          currentPage: response.data.pagination.currentPage,
+          totalPages: response.data.pagination.totalPages,
+          totalItems: response.data.pagination.totalItems,
+          limit: response.data.pagination.limit,
+        });
+        setError("");
       }
     } catch (err) {
-      console.log("Endpoint admin status belum ada, pakai data dummy");
-
-      // Dummy data untuk development
-      const dummyData = [
-        {
-          riwayat_id: 1,
-          usulan: {
-            jenis_usulan: "TB",
-            tanggal_pengajuan: "2024-12-20",
-            user: {
-              nama: "John Doe",
-              nip: "123456789",
-            },
-          },
-          status: "disetujui",
-          catatan: "Dokumen lengkap dan sesuai persyaratan",
-          tanggal_perubahan: "2024-12-25",
-        },
-        {
-          riwayat_id: 2,
-          usulan: {
-            jenis_usulan: "IB",
-            tanggal_pengajuan: "2024-12-22",
-            user: {
-              nama: "Jane Smith",
-              nip: "987654321",
-            },
-          },
-          status: "ditolak",
-          catatan:
-            "KTP tidak jelas, mohon upload ulang dengan kualitas yang lebih baik",
-          tanggal_perubahan: "2024-12-24",
-        },
-        {
-          riwayat_id: 3,
-          usulan: {
-            jenis_usulan: "TB",
-            tanggal_pengajuan: "2024-12-23",
-            user: {
-              nama: "Bob Wilson",
-              nip: "456789123",
-            },
-          },
-          status: "pending",
-          catatan: "Usulan baru disubmit, menunggu verifikasi",
-          tanggal_perubahan: "2024-12-23",
-        },
-      ];
-
-      setRiwayatData(dummyData);
-      setError("");
+      console.error("Error fetching riwayat status:", err);
+      setError(
+        err.response?.data?.message || "Gagal memuat data riwayat status"
+      );
     } finally {
       setLoading(false);
     }
   };
 
+  // Fetch data saat filters berubah
   useEffect(() => {
     fetchRiwayatStatus();
-  }, []);
+  }, [filters]);
+
+  // Handle filter change dari Filter.jsx
+  const handleFilterChange = (newFilters) => {
+    console.log("New filters:", newFilters);
+    setFilters(newFilters);
+  };
+
+  // Handle page change dari Pagination.jsx
+  const handlePageChange = (newPage) => {
+    setFilters((prev) => ({ ...prev, page: newPage }));
+  };
 
   // Format tanggal
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("id-ID");
   };
 
-  // Function untuk styling status
+  // Styling status
   const getStatusStyle = (status) => {
     switch (status?.toLowerCase()) {
       case "disetujui":
@@ -111,29 +106,34 @@ function AdminStatus() {
 
           {/* Main Content */}
           <div className="flex-1 overflow-auto p-6">
-            <div className="max-w-7xl mx-auto">
-              <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
+            <div className="max-w-7xl mx-auto space-y-6">
+              <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
                 Riwayat Status Pengajuan
               </h1>
 
-              {/* Loading State */}
-              {loading && (
+              {/* Error Message */}
+              {error && (
+                <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg">
+                  {error}
+                </div>
+              )}
+
+              {/* Filter */}
+              <Filter
+                onFilterChange={handleFilterChange}
+                showUserSearch={true}
+                placeholder="Cari Nama/NIP/Jenis Usulan"
+                initialFilters={filters}
+              />
+
+              {/* Table */}
+              {loading ? (
                 <div className="text-center py-8">
                   <p className="text-gray-600 dark:text-gray-400">
                     Memuat data...
                   </p>
                 </div>
-              )}
-
-              {/* Error State */}
-              {error && (
-                <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg mb-6">
-                  {error}
-                </div>
-              )}
-
-              {/* Table */}
-              {!loading && !error && (
+              ) : (
                 <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
                   {riwayatData.length === 0 ? (
                     <div className="text-center py-8">
@@ -215,6 +215,15 @@ function AdminStatus() {
                   )}
                 </div>
               )}
+
+              {/* Pagination */}
+              <Pagination
+                currentPage={pagination.currentPage}
+                totalPages={pagination.totalPages}
+                totalItems={pagination.totalItems}
+                itemsPerPage={pagination.limit}
+                onPageChange={handlePageChange}
+              />
             </div>
           </div>
         </div>

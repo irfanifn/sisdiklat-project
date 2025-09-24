@@ -2,7 +2,6 @@ import { prisma } from "../configs/utils.js";
 
 const getAllPengajuan = async (req, res) => {
   try {
-    // Ambil query parameters dengan validasi
     const {
       status,
       startDate,
@@ -11,13 +10,10 @@ const getAllPengajuan = async (req, res) => {
       page = 1,
       limit = 10,
     } = req.query;
-
-    // Konversi page dan limit ke integer, dengan fallback jika tidak valid
     const pageNum = isNaN(parseInt(page)) ? 1 : parseInt(page);
     const limitNum = isNaN(parseInt(limit)) ? 10 : parseInt(limit);
     const skip = (pageNum - 1) * limitNum >= 0 ? (pageNum - 1) * limitNum : 0;
 
-    // Validasi page dan limit
     if (pageNum < 1 || limitNum < 1) {
       return res.status(400).json({
         success: false,
@@ -25,10 +21,8 @@ const getAllPengajuan = async (req, res) => {
       });
     }
 
-    // Bangun kondisi where untuk filter
     const where = {};
 
-    // Filter by status (berdasarkan riwayatStatus terbaru)
     if (status) {
       where.riwayatStatus = {
         some: {
@@ -40,7 +34,6 @@ const getAllPengajuan = async (req, res) => {
       };
     }
 
-    // Filter by tanggal
     if (startDate || endDate) {
       where.tanggal_pengajuan = {};
       if (startDate) {
@@ -51,7 +44,6 @@ const getAllPengajuan = async (req, res) => {
       }
     }
 
-    // Search by nama, NIP, atau jenis usulan
     if (search) {
       where.OR = [
         { user: { nama: { contains: search, mode: "insensitive" } } },
@@ -60,10 +52,8 @@ const getAllPengajuan = async (req, res) => {
       ];
     }
 
-    // Ambil total data untuk pagination
     const totalItems = await prisma.usulan.count({ where });
 
-    // Ambil data dengan filter, pagination, dan include relasi
     const pengajuans = await prisma.usulan.findMany({
       where,
       include: {
@@ -118,7 +108,68 @@ const getAllPengajuan = async (req, res) => {
 
 const getAllRiwayatStatus = async (req, res) => {
   try {
+    // Ambil query parameters dengan validasi
+    const {
+      status,
+      startDate,
+      endDate,
+      search,
+      page = 1,
+      limit = 10,
+    } = req.query;
+    const pageNum = isNaN(parseInt(page)) ? 1 : parseInt(page);
+    const limitNum = isNaN(parseInt(limit)) ? 10 : parseInt(limit);
+    const skip = (pageNum - 1) * limitNum >= 0 ? (pageNum - 1) * limitNum : 0;
+
+    // Validasi page dan limit
+    if (pageNum < 1 || limitNum < 1) {
+      return res.status(400).json({
+        success: false,
+        message: "Parameter page dan limit harus lebih besar dari 0",
+      });
+    }
+
+    // Bangun kondisi where untuk filter
+    const where = {};
+
+    // Filter by status
+    if (status) {
+      where.status = {
+        equals: status,
+        mode: "insensitive",
+      };
+    }
+
+    // Filter by tanggal perubahan
+    if (startDate || endDate) {
+      where.tanggal_perubahan = {};
+      if (startDate) {
+        where.tanggal_perubahan.gte = new Date(startDate);
+      }
+      if (endDate) {
+        where.tanggal_perubahan.lte = new Date(endDate);
+      }
+    }
+
+    // Search by nama, NIP, atau jenis usulan
+    if (search) {
+      where.OR = [
+        {
+          usulan: { user: { nama: { contains: search, mode: "insensitive" } } },
+        },
+        {
+          usulan: { user: { nip: { contains: search, mode: "insensitive" } } },
+        },
+        { usulan: { jenis_usulan: { contains: search, mode: "insensitive" } } },
+      ];
+    }
+
+    // Ambil total data untuk pagination
+    const totalItems = await prisma.riwayatStatus.count({ where });
+
+    // Ambil data dengan filter, pagination, dan include relasi
     const riwayatStatus = await prisma.riwayatStatus.findMany({
+      where,
       include: {
         usulan: {
           include: {
@@ -132,11 +183,19 @@ const getAllRiwayatStatus = async (req, res) => {
         },
       },
       orderBy: { tanggal_perubahan: "desc" },
+      skip,
+      take: limitNum,
     });
 
     res.status(200).json({
       success: true,
       data: riwayatStatus,
+      pagination: {
+        totalItems,
+        totalPages: Math.ceil(totalItems / limitNum),
+        currentPage: pageNum,
+        limit: limitNum,
+      },
       message: "Data riwayat status berhasil diambil",
     });
   } catch (err) {
@@ -155,7 +214,6 @@ const approvePengajuan = async (req, res) => {
   const UserId = req.user.user_id;
 
   try {
-    // Cek apakah usulan ada
     const usulan = await prisma.usulan.findUnique({
       where: { usulan_id: parseInt(id) },
     });
@@ -167,7 +225,6 @@ const approvePengajuan = async (req, res) => {
       });
     }
 
-    // Buat riwayat status baru untuk approve
     await prisma.riwayatStatus.create({
       data: {
         usulan_id: parseInt(id),
@@ -177,7 +234,6 @@ const approvePengajuan = async (req, res) => {
       },
     });
 
-    // Update status dokumen juga kalau ada
     await prisma.dokumenSyarat.updateMany({
       where: { usulan_id: parseInt(id) },
       data: { status_verifikasi: "verified" },
@@ -203,7 +259,6 @@ const rejectPengajuan = async (req, res) => {
   const adminUserId = req.user.user_id;
 
   try {
-    // Validasi catatan harus ada
     if (!catatan || !catatan.trim()) {
       return res.status(400).json({
         success: false,
@@ -211,7 +266,6 @@ const rejectPengajuan = async (req, res) => {
       });
     }
 
-    // Cek apakah usulan ada
     const usulan = await prisma.usulan.findUnique({
       where: { usulan_id: parseInt(id) },
     });
@@ -223,7 +277,6 @@ const rejectPengajuan = async (req, res) => {
       });
     }
 
-    // Buat riwayat status baru untuk reject
     await prisma.riwayatStatus.create({
       data: {
         usulan_id: parseInt(id),
@@ -233,7 +286,6 @@ const rejectPengajuan = async (req, res) => {
       },
     });
 
-    // Update status dokumen juga kalau ada
     await prisma.dokumenSyarat.updateMany({
       where: { usulan_id: parseInt(id) },
       data: { status_verifikasi: "rejected" },

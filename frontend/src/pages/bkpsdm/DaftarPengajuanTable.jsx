@@ -268,7 +268,7 @@ const DaftarPengajuanTable = ({ pengajuans, loading, onActionComplete }) => {
 
       {/* Modal untuk Approve/Reject */}
       {modalType && (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-30 dark:bg-gray-900 dark:bg-opacity-40 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-blend-darken shadow-md bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 max-w-md w-full">
             <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
               {modalType === "approve"
