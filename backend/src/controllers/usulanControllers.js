@@ -146,16 +146,6 @@ const getUserUsulans = async (req, res) => {
       };
     }
 
-    console.log("Query params:", {
-      status,
-      startDate,
-      endDate,
-      search,
-      page,
-      limit,
-    });
-    console.log("Where clause:", where);
-
     // Hitung total data untuk pagination
     const totalItems = await prisma.usulan.count({ where });
 

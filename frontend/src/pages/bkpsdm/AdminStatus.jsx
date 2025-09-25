@@ -4,6 +4,7 @@ import Sidebar from "../../components/Sidebar";
 import Header from "../../components/Header";
 import Filter from "../../components/Filter.jsx";
 import Pagination from "../../components/Pagination.jsx";
+import PrintReport from "../../components/PrintReport.jsx";
 import { baseUrl } from "../../configs/constant.js";
 
 function AdminStatus() {
@@ -26,11 +27,32 @@ function AdminStatus() {
     limit: 10,
   });
 
+  // Fungsi untuk memicu cetak
+  const handlePrint = () => {
+    console.log(
+      "Print button clicked, riwayatData length:",
+      riwayatData.length
+    );
+    if (riwayatData.length === 0) {
+      alert("Tidak ada data untuk dicetak");
+      return;
+    }
+    window.print();
+  };
+
+  // Debug riwayatData
+  useEffect(() => {
+    console.log("riwayatData updated:", riwayatData);
+  }, [riwayatData]);
+
   // Fetch semua riwayat status
   const fetchRiwayatStatus = async () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("Token tidak ditemukan. Silakan login kembali.");
+      }
       console.log("Fetching riwayat status with params:", filters);
       const response = await axios.get(`${baseUrl}/api/bkpsdm/status`, {
         headers: {
@@ -44,7 +66,7 @@ function AdminStatus() {
       });
 
       if (response.data.success) {
-        setRiwayatData(response.data.data);
+        setRiwayatData(response.data.data || []);
         setPagination({
           currentPage: response.data.pagination.currentPage,
           totalPages: response.data.pagination.totalPages,
@@ -52,12 +74,12 @@ function AdminStatus() {
           limit: response.data.pagination.limit,
         });
         setError("");
+      } else {
+        throw new Error(response.data.message || "Gagal memuat data");
       }
     } catch (err) {
       console.error("Error fetching riwayat status:", err);
-      setError(
-        err.response?.data?.message || "Gagal memuat data riwayat status"
-      );
+      setError(err.message || "Gagal memuat data riwayat status");
     } finally {
       setLoading(false);
     }
@@ -81,7 +103,7 @@ function AdminStatus() {
 
   // Format tanggal
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("id-ID");
+    return dateString ? new Date(dateString).toLocaleDateString("id-ID") : "-";
   };
 
   // Styling status
@@ -103,13 +125,21 @@ function AdminStatus() {
         <Sidebar currentPage={currentPage} onPageChange={setCurrentPage} />
         <div className="flex-1 flex flex-col overflow-hidden">
           <Header />
-
           {/* Main Content */}
           <div className="flex-1 overflow-auto p-6">
             <div className="max-w-7xl mx-auto space-y-6">
-              <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
-                Riwayat Status Pengajuan
-              </h1>
+              <div className="flex justify-between items-center">
+                <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+                  Riwayat Status Pengajuan
+                </h1>
+                <button
+                  onClick={handlePrint}
+                  className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
+                >
+                  <span class="material-symbols-rounded">print</span>
+                  Cetak
+                </button>
+              </div>
 
               {/* Error Message */}
               {error && (
@@ -170,9 +200,9 @@ function AdminStatus() {
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200 dark:divide-gray-600">
-                          {riwayatData.map((riwayat) => (
+                          {riwayatData.map((riwayat, index) => (
                             <tr
-                              key={riwayat.riwayat_id}
+                              key={riwayat.riwayat_id || index}
                               className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                             >
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
@@ -193,7 +223,7 @@ function AdminStatus() {
                                     riwayat.status
                                   )}`}
                                 >
-                                  {riwayat.status}
+                                  {riwayat.status || "-"}
                                 </span>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
@@ -224,6 +254,9 @@ function AdminStatus() {
                 itemsPerPage={pagination.limit}
                 onPageChange={handlePageChange}
               />
+
+              {/* Print Component (Hidden on Screen) */}
+              <PrintReport data={riwayatData} filters={filters} type="status" />
             </div>
           </div>
         </div>
