@@ -99,7 +99,7 @@ function PegawaiDashboard() {
                 </p>
               </div>
               <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
-                <span className="text-2xl">📄</span>
+                <span class="material-symbols-rounded">note_alt</span>
               </div>
             </div>
           </div>
@@ -116,7 +116,7 @@ function PegawaiDashboard() {
                 </p>
               </div>
               <div className="w-12 h-12 bg-yellow-100 dark:bg-yellow-900 rounded-lg flex items-center justify-center">
-                <span className="text-2xl">⏳</span>
+                <span class="material-symbols-rounded">alarm_smart_wake</span>
               </div>
             </div>
           </div>
@@ -133,7 +133,7 @@ function PegawaiDashboard() {
                 </p>
               </div>
               <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
-                <span className="text-2xl">✅</span>
+                <span class="material-symbols-rounded">check_box</span>
               </div>
             </div>
           </div>
@@ -150,7 +150,7 @@ function PegawaiDashboard() {
                 </p>
               </div>
               <div className="w-12 h-12 bg-red-100 dark:bg-red-900 rounded-lg flex items-center justify-center">
-                <span className="text-2xl">❌</span>
+                <span class="material-symbols-rounded">close</span>
               </div>
             </div>
           </div>
@@ -167,7 +167,7 @@ function PegawaiDashboard() {
                 <h3 className="text-lg font-semibold mb-2">Buat Usulan Baru</h3>
                 <p className="text-blue-100">Ajukan usulan TB/IB baru</p>
               </div>
-              <span className="text-3xl">➕</span>
+              <span class="material-symbols-rounded">add_2</span>
             </div>
           </button>
 
@@ -182,7 +182,7 @@ function PegawaiDashboard() {
                 </h3>
                 <p className="text-green-100">Pantau progress usulan Anda</p>
               </div>
-              <span className="text-3xl">📊</span>
+              <span class="material-symbols-rounded">chart_data</span>
             </div>
           </button>
         </div>

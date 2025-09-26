@@ -154,7 +154,7 @@ function AdminDashboard() {
                 </p>
               </div>
               <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
-                <span className="text-2xl">📋</span>
+                <span class="material-symbols-rounded">note_alt</span>
               </div>
             </div>
           </div>
@@ -171,7 +171,7 @@ function AdminDashboard() {
                 </p>
               </div>
               <div className="w-12 h-12 bg-yellow-100 dark:bg-yellow-900 rounded-lg flex items-center justify-center">
-                <span className="text-2xl">⏰</span>
+                <span class="material-symbols-rounded">alarm_smart_wake</span>
               </div>
             </div>
           </div>
@@ -188,7 +188,7 @@ function AdminDashboard() {
                 </p>
               </div>
               <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
-                <span className="text-2xl">✅</span>
+                <span class="material-symbols-rounded">check_box</span>
               </div>
             </div>
           </div>
@@ -205,7 +205,7 @@ function AdminDashboard() {
                 </p>
               </div>
               <div className="w-12 h-12 bg-red-100 dark:bg-red-900 rounded-lg flex items-center justify-center">
-                <span className="text-2xl">❌</span>
+                <span class="material-symbols-rounded">close</span>
               </div>
             </div>
           </div>
@@ -224,7 +224,7 @@ function AdminDashboard() {
                   Review dan proses usulan pegawai
                 </p>
               </div>
-              <span className="text-3xl">⚡</span>
+              <span class="material-symbols-rounded">electric_bolt</span>
             </div>
           </button>
 
@@ -239,7 +239,7 @@ function AdminDashboard() {
                   Lihat semua aktivitas pengajuan
                 </p>
               </div>
-              <span className="text-3xl">📈</span>
+              <span class="material-symbols-rounded">chart_data</span>
             </div>
           </button>
         </div>
