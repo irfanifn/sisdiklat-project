@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
 const login = async (req, res) => {
-  const { nip } = req.body;
+  const { nip, password } = req.body;
 
   try {
     const user = await prisma.user.findUnique({
@@ -14,6 +14,23 @@ const login = async (req, res) => {
       return res.status(401).json({
         success: false,
         message: "NIP tidak valid",
+      });
+    }
+
+    // Cek apakah user sudah registrasi
+    if (!user.password || !user.is_active) {
+      return res.status(401).json({
+        success: false,
+        message: "Silakan registrasi terlebih dahulu",
+      });
+    }
+
+    // Verifikasi password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        success: false,
+        message: "Password salah",
       });
     }
 
