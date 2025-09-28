@@ -34,7 +34,7 @@ function AdminStatus() {
       riwayatData.length
     );
     if (riwayatData.length === 0) {
-      alert("Tidak ada data untuk dicetak");
+      setError("Tidak ada data untuk dicetak");
       return;
     }
     window.print();
