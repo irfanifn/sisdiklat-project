@@ -51,7 +51,15 @@ function Login() {
         setError(response.data.message);
       }
     } catch (error) {
-      setError("Login gagal. Silakan coba lagi.");
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setError(error.response.data.message);
+      } else {
+        setError("Terjadi kesalahan. Silakan coba lagi.");
+      }
       console.error("Login error:", error);
     } finally {
       setLoading(false);

@@ -37,8 +37,16 @@ function Register() {
         setError(response.data.message);
       }
     } catch (error) {
-      setError("Registrasi gagal. Silakan coba lagi.");
-      console.error("Register error:", error);
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setError(error.response.data.message); // gunakan pesan dari backend
+      } else {
+        setError("Terjadi kesalahan. Silakan coba lagi.");
+      }
+      console.error("Login error:", error);
     } finally {
       setLoading(false);
     }
