@@ -6,6 +6,7 @@ import { useUser } from "../contexts/UserContext.jsx";
 
 function Login() {
   const [nip, setNip] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ function Login() {
     try {
       const response = await axios.post(`${baseUrl}/api/login`, {
         nip: nip,
+        password: password,
       });
 
       if (response.data.success) {
@@ -81,6 +83,20 @@ function Login() {
             />
             <span className="material-symbols-rounded absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-2xl">
               dialpad
+            </span>
+          </div>
+
+          <div className="relative">
+            <input
+              type="password"
+              placeholder="Password"
+              className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <span className="material-symbols-rounded absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-2xl">
+              lock
             </span>
           </div>
 
