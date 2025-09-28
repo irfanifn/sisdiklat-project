@@ -112,6 +112,17 @@ function Login() {
             {loading ? "Loading..." : "Log In"}
           </button>
         </form>
+        <div className="mt-6 text-center">
+          <p className="text-sm text-gray-600">
+            Belum punya akun?{" "}
+            <button
+              onClick={() => navigate("/register")}
+              className="text-blue-600 hover:text-blue-800 font-medium cursor-pointer"
+            >
+              Daftar di sini
+            </button>
+          </p>
+        </div>
       </div>
     </div>
   );

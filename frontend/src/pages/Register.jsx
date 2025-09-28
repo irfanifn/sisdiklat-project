@@ -116,8 +116,8 @@ function Register() {
           <p className="text-sm text-gray-600">
             Sudah punya akun?{" "}
             <button
-              onClick={() => navigate("/login")}
-              className="text-blue-600 hover:text-blue-800 font-medium"
+              onClick={() => navigate("/")}
+              className="text-blue-600 hover:text-blue-800 font-medium cursor-pointer"
             >
               Login di sini
             </button>
