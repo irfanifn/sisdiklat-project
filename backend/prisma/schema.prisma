@@ -16,11 +16,14 @@ datasource db {
 model user {
   user_id             Int       @id @default(autoincrement())
   nama                String    @db.VarChar(255)
-  nip                 String   @unique
+  nip                 String    @unique
   email               String    @db.VarChar(255)
   jabatan             String    @db.VarChar(100)
   role                String    @db.VarChar(50)
   nama_opd            String    @db.VarChar(255)
+  password            String?
+  is_active           Boolean
+  registered_at       DateTime?
   usulan              usulan[]
 }
 
