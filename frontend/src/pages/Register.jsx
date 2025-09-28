@@ -6,6 +6,8 @@ import { baseUrl } from "../configs/constant.js";
 function Register() {
   const [nip, setNip] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -73,7 +75,7 @@ function Register() {
 
           <div className="relative">
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Password"
               className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
               value={password}
@@ -83,11 +85,20 @@ function Register() {
             <span className="material-symbols-rounded absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-2xl">
               lock
             </span>
+            <button
+              type="button"
+              className="absolute right-3 top-7 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              <span className="material-symbols-rounded text-xl">
+                {showPassword ? "visibility_off" : "visibility"}
+              </span>
+            </button>
           </div>
 
           <div className="relative">
             <input
-              type="password"
+              type={showConfirmPassword ? "text" : "password"}
               placeholder="Konfirmasi Password"
               className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
               value={confirmPassword}
@@ -97,6 +108,15 @@ function Register() {
             <span className="material-symbols-rounded absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-2xl">
               lock
             </span>
+            <button
+              type="button"
+              className="absolute right-3 top-7 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            >
+              <span className="material-symbols-rounded text-xl">
+                {showConfirmPassword ? "visibility_off" : "visibility"}
+              </span>
+            </button>
           </div>
 
           <button
