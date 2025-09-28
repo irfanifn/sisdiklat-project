@@ -9,6 +9,7 @@ function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -31,8 +32,10 @@ function Register() {
       });
 
       if (response.data.success) {
-        alert("Registrasi berhasil! Silakan login.");
-        navigate("/login");
+        setSuccess("Registrasi berhasil! Silakan login.");
+        setTimeout(() => {
+          navigate("/");
+        }, 2000);
       } else {
         setError(response.data.message);
       }
@@ -42,7 +45,7 @@ function Register() {
         error.response.data &&
         error.response.data.message
       ) {
-        setError(error.response.data.message); // gunakan pesan dari backend
+        setError(error.response.data.message);
       } else {
         setError("Terjadi kesalahan. Silakan coba lagi.");
       }
@@ -62,6 +65,11 @@ function Register() {
           {error && (
             <div className="bg-red-100 text-red-700 px-4 py-2 rounded mb-4 text-center text-sm">
               {error}
+            </div>
+          )}
+          {success && (
+            <div className="bg-green-100 text-green-700 px-4 py-2 rounded mb-4 text-center text-sm">
+              {success}
             </div>
           )}
 
