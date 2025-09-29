@@ -29,7 +29,7 @@ function Pengajuan() {
     limit: 10,
   });
 
-  // State untuk data yang bisa diedit (hardcode dulu)
+  // State untuk data yang bisa diedit (masih hardcore)
   const [jenisUsulanData, setJenisUsulanData] = useState(["TB", "IB"]);
   const [syaratDokumenData, setSyaratDokumenData] = useState(
     "Upload file gabungan berisi: KTP, Ijazah, Surat Keterangan Sehat, Surat Rekomendasi Atasan"
@@ -48,8 +48,8 @@ function Pengajuan() {
         },
         params: {
           ...filters,
-          page: filters.page || 1, // Pastikan page selalu valid
-          limit: filters.limit || 10, // Pastikan limit selalu valid
+          page: filters.page || 1,
+          limit: filters.limit || 10,
         },
       });
 
