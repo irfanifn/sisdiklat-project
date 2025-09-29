@@ -179,17 +179,17 @@ function Usulan() {
                   </div>
 
                   {/* Submit Button */}
-                  <div className="pt-4">
+                  <div className="pt-4 flex justify-center">
                     <button
                       type="submit"
                       disabled={loading}
-                      className={`w-full px-4 py-2 text-sm font-medium rounded-md shadow-sm text-white ${
+                      className={`w-2xs px-4 py-2 text-sm font-medium rounded-md shadow-sm text-white ${
                         loading
                           ? "bg-blue-400 cursor-not-allowed"
                           : "bg-blue-600 hover:bg-blue-700"
                       } transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2`}
                     >
-                      {loading ? "Submitting..." : "Submit Usulan"}
+                      {loading ? "Mengirim..." : "Kirim Usulan"}
                     </button>
                   </div>
                 </form>

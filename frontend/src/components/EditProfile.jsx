@@ -142,7 +142,7 @@ function EditProfile({ userData, onSave }) {
         disabled={loading}
         className="w-full px-4 py-2 text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 transition-colors disabled:opacity-50"
       >
-        {loading ? "Saving..." : "Save"}
+        {loading ? "Menyimpan..." : "Simpan Perubahan"}
       </button>
     </form>
   );
