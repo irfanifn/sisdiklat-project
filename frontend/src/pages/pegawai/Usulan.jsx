@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import Header from "../../components/Header";
 import axios from "axios";
@@ -6,6 +6,8 @@ import { baseUrl } from "../../configs/constant";
 
 function Usulan() {
   const [currentPage, setCurrentPage] = useState("Usulan");
+  const [syaratDokumen, setSyaratDokumen] = useState("");
+  const [loadingPersyaratan, setLoadingPersyaratan] = useState("false");
 
   // State untuk form
   const [formData, setFormData] = useState({
@@ -16,10 +18,38 @@ function Usulan() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
 
-  // Data hardcode
   const jenisUsulanOptions = ["TB", "IB"];
-  const syaratDokumen =
-    "Upload file gabungan berisi: KTP, Ijazah, Surat Keterangan Sehat, Surat Rekomendasi Atasan";
+
+  // Fetch persyaratan ketika jenis usulan berubah
+  useEffect(() => {
+    const fetchPersyaratan = async () => {
+      if (!formData.jenisUsulan) {
+        setSyaratDokumen("");
+        return;
+      }
+
+      setLoadingPersyaratan("true");
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.get(
+          `${baseUrl}/api/persyaratan/${formData.jenisUsulan}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        if (res.data.success) {
+          setSyaratDokumen(res.data.data.deskripsi);
+        }
+      } catch (err) {
+        console.error("Error fetching persyaratan:", err);
+        setSyaratDokumen("Gagal memuat persyaratan");
+      } finally {
+        setLoadingPersyaratan(false);
+      }
+    };
+    fetchPersyaratan();
+  }, [formData.jenisUsulan]);
 
   // Handle input change
   const handleInputChange = (e) => {
@@ -51,7 +81,7 @@ function Usulan() {
       const formDataToSend = new FormData();
       formDataToSend.append("jenisUsulan", formData.jenisUsulan);
       formDataToSend.append("tanggalPengajuan", formData.tanggalPengajuan);
-      formDataToSend.append("dokumenSyarat", formData.dokumen); // Nama field sesuai dengan multer di backend
+      formDataToSend.append("dokumenSyarat", formData.dokumen);
 
       const res = await axios.post(`${baseUrl}/api/usulan`, formDataToSend, {
         headers: {
@@ -161,7 +191,15 @@ function Usulan() {
                       <p className="text-sm text-blue-800 dark:text-blue-200">
                         <strong>Persyaratan Dokumen:</strong>
                         <br />
-                        {syaratDokumen}
+                        {syaratDokumen && (
+                          <div className="mb-3 p-3 bg-blue-50 dark:bg-blue-900 rounded-lg border-l-4 border-blue-400 dark:border-blue-600">
+                            <p className="text-sm text-blue-800 dark:text-blue-200 whitespace-pre-line">
+                              <strong>Persyaratan Dokumen:</strong>
+                              <br />
+                              {loadingPersyaratan ? "Memuat..." : syaratDokumen}
+                            </p>
+                          </div>
+                        )}
                       </p>
                     </div>
 
