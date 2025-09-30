@@ -6,6 +6,10 @@ import {
   approvePengajuan,
   rejectPengajuan,
 } from "../controllers/adminControllers.js";
+import {
+  getPersyaratan,
+  updatePersyaratan,
+} from "../controllers/persyaratanControllers.js";
 
 const adminRouter = express.Router();
 
@@ -21,5 +25,7 @@ adminRouter.put(
   authMiddleware,
   rejectPengajuan
 );
+adminRouter.get("/persyaratan/:jenisUsulan", authMiddleware, getPersyaratan);
+adminRouter.put("/persyaratan/:jenisUsulan", authMiddleware, updatePersyaratan);
 
 export default adminRouter;
