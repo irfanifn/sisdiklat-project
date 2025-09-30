@@ -46,6 +46,13 @@ model dokumenSyarat {
   usulan              usulan    @relation(fields: [usulan_id], references: [usulan_id])
 }
 
+model persyaratanDokumen {
+  persyaratan_id      Int       @id @default(autoincrement())
+  jenis_usulan        String    @unique @db.VarChar(10)
+  deskripsi           String    @db.Text
+  updated_at          DateTime  @updatedAt
+}
+
 model riwayatStatus {
   riwayat_id          Int       @id @default(autoincrement())
   usulan_id           Int
