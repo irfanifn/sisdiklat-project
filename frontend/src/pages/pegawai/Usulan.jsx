@@ -187,21 +187,15 @@ function Usulan() {
                       Upload Dokumen
                     </label>
 
-                    <div className="mb-3 p-3 bg-blue-50 dark:bg-blue-900 rounded-lg border-l-4 border-blue-400 dark:border-blue-600">
-                      <p className="text-sm text-blue-800 dark:text-blue-200">
-                        <strong>Persyaratan Dokumen:</strong>
-                        <br />
-                        {syaratDokumen && (
-                          <div className="mb-3 p-3 bg-blue-50 dark:bg-blue-900 rounded-lg border-l-4 border-blue-400 dark:border-blue-600">
-                            <p className="text-sm text-blue-800 dark:text-blue-200 whitespace-pre-line">
-                              <strong>Persyaratan Dokumen:</strong>
-                              <br />
-                              {loadingPersyaratan ? "Memuat..." : syaratDokumen}
-                            </p>
-                          </div>
-                        )}
-                      </p>
-                    </div>
+                    {syaratDokumen && (
+                      <div className="mb-3 p-3 bg-blue-50 dark:bg-blue-900 rounded-lg border-l-4 border-blue-400 dark:border-blue-600">
+                        <p className="text-sm text-blue-800 dark:text-blue-200 whitespace-pre-line">
+                          <strong>Persyaratan Dokumen:</strong>
+                          <br />
+                          {loadingPersyaratan ? "Memuat..." : syaratDokumen}
+                        </p>
+                      </div>
+                    )}
 
                     <input
                       type="file"
